@@ -2,9 +2,21 @@
 GET     /                           controllers.HomeController.index
 GET     /index                      controllers.HomeController.index
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET     /assets/*file               controllers.Assets.at(file)
 
 GET     /signIn                      controllers.AuthController.signInForm
 GET     /signUp                      controllers.AuthController.signUpForm
 GET     /signOut                     controllers.AuthController.signOut
 POST    /signIn                      controllers.AuthController.signIn
 POST    /signUp                      controllers.AuthController.signUp
+
+GET     /getCalendar                        controllers.CalendarController.getCalendar
+
+GET     /songList                           controllers.SongController.getSongs()
+POST    /song/:artist/:title/:key/:status   controllers.SongController.addSong(artist, title, key, status)
+DELETE  /song/:songId                       controllers.SongController.deleteSong(songId)
+
+POST    /event/rehearsal/:date/:location    controllers.EventController.addRehearsal(date, location)
+POST    /event/gig/:date/:location          controllers.EventController.addGig(date, location)
+POST    /event/memo/:date/:memo             controllers.EventController.addMemo(date, memo)
+POST    /event/holiday/:date/:person/:till  controllers.EventController.addHoliday(date, person, till)

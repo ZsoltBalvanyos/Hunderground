@@ -1,0 +1,150 @@
+
+@import services.Month
+@import controllers.security.User
+
+@(months: List[Month])(implicit user: Option[User])
+
+@main("Calendar") {
+
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/calendar.css")"/>
+
+    <div class="container">
+
+        <div id="calendar" class="header-drop">
+
+            @for(month <- months) {
+                <div class="col-xs-12 col-md-3 month">
+
+                    <div class="monthHeader">@month.name</div>
+
+                    @for(day <- month.days) {
+                        @if(day.style == "empty") {
+                            <div class="empty"></div>
+                        } else {
+                            <div class="@day.style">
+                                <div class="date">@day.formattedDate</div>
+                                @for(event <- day.events) {
+                                    <div class="memo">
+                                        <label type="text" id="@day.dayId" onchange="sendMemo('@day.dayId')" onfocus="setFocus('@day.dayId')" ondblclick="alert('OK edit')">
+                                            @if(event.description.length > 12) {
+                                                @event.description.take(10)...
+                                            } else {
+                                                @event.description
+                                            }
+                                        </label>
+                                    </div>
+                                }
+                                <div class="dropdown">
+                                    <button class="newEvent" data-toggle="dropdown"><i class="fa fa-plus"></i></button>
+                                    <ul class="dropdown-menu">
+                                        <li onclick="addRehearsal('@day.dayId')"><label class="label rehearsalLabel">Rehearsal</label></li>
+                                        <li onclick="addGig('@day.dayId')"><label class="label gigLabel">Gig</label></li>
+                                        <li onclick="addMemo('@day.dayId')"><label class="label memoLabel">Memo</label></li>
+                                        <li onclick="addHoliday('@day.dayId')"><label class="label holidayLabel">Holiday</label></li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        }
+                    }
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+
+    <div class="modal fade" id="newRehearsal" tabindex="-1" role="dialog" aria-labelledby="newRehearsal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title">New Rehearsal</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input id="rehearsalLocation" name="rehearsalLocation" placeholder="Location" size="50"/>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn button" id="submitModal" onclick="saveEvent('rehearsal')">Save rehearsal</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="newGig" tabindex="-1" role="dialog" aria-labelledby="newGig" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title">New Gig</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input id="gigLocation" name="gigLocation" placeholder="Location" size="50"/>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn button" id="submitModal" onclick="saveEvent('gig')">Save gig</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="newMemo" tabindex="-1" role="dialog" aria-labelledby="newMemo" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title">New Memo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input id="memo" name="memo" size="50"/>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn button" id="submitModal" onclick="saveEvent('memo')">Save memo</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="newHoliday" tabindex="-1" role="dialog" aria-labelledby="newHoliday" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title">New Holiday</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input id="person" name="person" size="50"/>
+                    <input id="holidayTill" type="date">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn button" id="submitModal" onclick="saveEvent('holiday')">Save holiday</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}

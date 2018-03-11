@@ -7,7 +7,9 @@ import play.api.cache.SyncCacheApi
 import play.api.mvc._
 
 @Singleton
-class HomeController @Inject()(cc: ControllerComponents, SecuredAction: SecuredAction, cache: SyncCacheApi)
+class HomeController @Inject()(cc: ControllerComponents,
+                               SecuredAction: SecuredAction,
+                               cache: SyncCacheApi)
   extends SecuredController(cc, cache) {
 
   def index = SecuredAction { implicit request: Request[AnyContent] =>

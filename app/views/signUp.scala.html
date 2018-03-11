@@ -6,7 +6,6 @@
     <fieldset class="col-md-6 col-md-offset-3">
         <legend>Sign Up</legend>
         @helper.form(action = routes.AuthController.signUp()) {
-            @helper.CSRF.formField
             @helper.inputText(signInForm("firstName"), '_hiddenLabel -> "First name", 'placeholder -> "First name", 'class -> "form-control input-lg")
             @helper.inputText(signInForm("lastName"), '_hiddenLabel -> "Last name", 'placeholder -> "Last name", 'class -> "form-control input-lg")
             @helper.inputText(signInForm("email"), '_hiddenLabel -> "Email address", 'placeholder -> "Email address", 'class -> "form-control input-lg")

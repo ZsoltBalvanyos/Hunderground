@@ -1,0 +1,130 @@
+@import controllers.security.User
+
+@(songs: Seq[Song], backlogs: Seq[Song])(implicit user: Option[User])
+
+@main("Songs"){
+
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/songs.css")"/>
+
+    <div class="container">
+
+        <div class="col-md-3"></div>
+
+        <div class="col-xs-12 col-md-6 fitScreen">
+
+            <div id="songs" class="songs header-drop">
+
+                <h3>Dallista</h3>
+
+                <div class="row tableHead">
+                    <div class="artistTablehead tableHeadElement">Artist</div>
+                    <div class="titleTablehead tableHeadElement">Title</div>
+                    <div class="keyTablehead tableHeadElement">Key</div>
+                </div>
+
+
+                @for(song <- songs) {
+                    <div class="row song">
+                        <div class="artist" ondblclick="editSong('@song.songId','@song.artist','@song.title','@song.key','song')">@song.artist</div>
+                        <div class="title" ondblclick="editSong('@song.songId','@song.artist','@song.title','@song.key','song')">
+                            @song.title
+                            <div class="close">
+                                <i class="fa fa-window-close" onclick="deleteSong('@song.songId')"></i>
+                            </div>
+                        </div>
+                        <div class="key" ondblclick="editSong('@song.songId','@song.artist','@song.title','@song.key','song')">@song.key.replace('s', '#')</div>
+                    </div>
+                }
+
+                <br/>
+
+                <button type="button" class="btn button" onclick="openModal('song')">
+                    Add song
+                </button>
+
+                <br/>
+
+                <hr/>
+
+                <h3>Tervezett</h3>
+
+                <div class="row tableHead">
+                    <div class="artistTablehead tableHeadElement">Artist</div>
+                    <div class="titleTablehead tableHeadElement">Title</div>
+                    <div class="keyTablehead tableHeadElement">Key</div>
+                </div>
+
+                @for(backlog <- backlogs) {
+                    <div class="row song">
+                        <div class="artist" ondblclick="editSong('@backlog.songId','@backlog.artist','@backlog.title','@backlog.key','backlog')">@backlog.artist</div>
+                        <div class="title" ondblclick="editSong('@backlog.songId','@backlog.artist','@backlog.title','@backlog.key','backlog')">
+                            @backlog.title
+                            <div class="close">
+                                <i class="fa fa-window-close" onclick="deleteSong('@backlog.songId')"></i>
+                            </div>
+                            <div class="moveUp">
+                                <i class="fa fa-arrow-circle-up" onclick="moveUp('@backlog.songId','@backlog.artist','@backlog.title','@backlog.key')"></i>
+                            </div>
+                        </div>
+                        <div class="key" ondblclick="editSong('@backlog.songId','@backlog.artist','@backlog.title','@backlog.key','backlog')"> @backlog.key.replace('s', '#')</div>
+                    </div>
+                }
+
+                <br/>
+
+                <button type="button" class="btn button" onclick="openModal('backlog')">
+                    Add song
+                </button>
+
+                <hr/>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3"></div>
+
+    </div>
+
+
+
+    <div class="modal fade" id="newSong" tabindex="-1" role="dialog" aria-labelledby="newSong" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title">New Song</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input id="artist" name="artist" placeholder="Artist" size="50"/><br/>
+                    <input id="title" name="title" placeholder="Title" size="50"/><br/><br/>
+                    Key
+                    <select id="key" style="position: inherit; background: inherit; border: 0px">
+                        <option value="">select...</option>
+                        <option value="A">A</option>
+                        <option value="Bb">Bb</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="Cs">C#</option>
+                        <option value="D">D</option>
+                        <option value="Ds">D#</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="Fs">F#</option>
+                        <option value="G">G</option>
+                        <option value="Gs">G#</option>
+                    </select>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn button" id="submitModal">Save song</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+}
