@@ -20,7 +20,7 @@ case class Day(dayId: String,
 
 case class Month(name: String, days: List[Day])
 
-class CalendarService @Inject() (val eventRepository: EventRepository) {
+class CalendarService @Inject() (eventRepository: EventRepository) {
 
   private val viewFormat = DateTimeFormatter.ofPattern("dd")
 

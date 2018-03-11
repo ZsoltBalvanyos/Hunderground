@@ -3,30 +3,48 @@
 
 @main("Sign In") {
 
-    <fieldset class="col-md-6 col-md-offset-3">
-        <legend>"Sing in"</legend>
-        @helper.form(action = routes.AuthController.signIn()) {
-            @helper.inputText(signInForm("email"), '_hiddenLabel -> "Email address", 'placeholder -> "Email address", 'class -> "form-control input-lg")
-            @helper.inputPassword(signInForm("password"), '_hiddenLabel -> "Password", 'placeholder -> "Password", 'class -> "form-control input-lg")
-            @helper.checkbox(signInForm("rememberMe"), '_text -> "Remember Me", 'checked -> true)
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/login.css")"/>
 
-            <div class="form-group">
-                <div>
-                    <button id="submit" type="submit" value="submit" class="btn btn-lg btn-primary btn-block">Sing In</button>
-                </div>
-            </div>
-        }
 
-        @request.flash.get("error").map { msg =>
-            <div class="col-md-6 col-md-offset-3 alert alert-danger alert-error">
-                <strong>@msg</strong>
-            </div>
-        }
-        @request.flash.get("success").map { msg =>
-            <div class="col-md-6 col-md-offset-3 success alert-success">
-                <strong>@msg</strong>
-            </div>
-        }
+    <div class="container">
 
-    </fieldset>
+        <div class="col-md-3"></div>
+
+        <div class="col-xs-12 col-md-6 header-drop">
+
+            <fieldset>
+
+                <legend>Sing in</legend>
+
+                @helper.form(action = routes.AuthController.signIn()) {
+                    @helper.inputText(signInForm("email"), '_showConstraints -> false, '_label -> "", 'placeholder -> "Email address", 'class -> "form-control input-lg")
+                    @helper.inputPassword(signInForm("password"), '_showConstraints -> false, '_label -> "", 'placeholder -> "Password", 'class -> "form-control input-lg")
+                    @helper.checkbox(signInForm("rememberMe"), '_showConstraints -> false, '_label -> "", '_text -> "Remember Me", 'checked -> true)
+
+                    <div class="form-group">
+                        <div>
+                            <button id="submit" type="submit" value="submit" class="btn btn-lg btn-primary btn-block">Sing In</button>
+                        </div>
+                    </div>
+                }
+
+                @request.flash.get("error").map { msg =>
+                    <div class="col-md-6 col-md-offset-3 alert alert-danger alert-error">
+                        <strong>@msg</strong>
+                    </div>
+                }
+                @request.flash.get("success").map { msg =>
+                    <div class="col-md-6 col-md-offset-3 success alert-success">
+                        <strong>@msg</strong>
+                    </div>
+                }
+
+            </fieldset>
+
+        </div>
+
+        <div class="col-md-3"></div>
+
+    </div>
+
 }

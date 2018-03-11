@@ -12,33 +12,32 @@ import services.CalendarService
 class EventController @Inject()(cc: ControllerComponents,
                                 calendarService: CalendarService,
                                 SecuredAction: SecuredAction,
-                                cache: SyncCacheApi)
+                                cache: SyncCacheApi,
+                                eventRepository: EventRepository)
   extends SecuredController(cc, cache) {
 
-  val  eventRepository: EventRepository = calendarService.eventRepository
-
-  def addRehearsal(date: String, location: String) = Action {implicit request =>
+  def addRehearsal(date: String, location: String) = SecuredAction {implicit request =>
     implicit val user = request.user
 
     eventRepository.create(location, getLocalDate(date), "rehearsal")
     Ok
   }
 
-  def addGig(date: String, location: String) = Action {implicit request =>
+  def addGig(date: String, location: String) = SecuredAction {implicit request =>
     implicit val user = request.user
 
     eventRepository.create(location, getLocalDate(date), "gig")
     Ok
   }
 
-  def addMemo(date: String, memo: String) = Action {implicit request =>
+  def addMemo(date: String, memo: String) = SecuredAction {implicit request =>
     implicit val user = request.user
 
     eventRepository.create(memo, getLocalDate(date), "memo")
     Ok
   }
 
-  def addHoliday(start: String, person: String, till: String) = Action {implicit request =>
+  def addHoliday(start: String, person: String, till: String) = SecuredAction {implicit request =>
     implicit val user = request.user
 
     calendarService.addHoliday(getLocalDate(start), getLocalDate(till), person)
