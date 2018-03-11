@@ -1,0 +1,20 @@
+p {
+    color: red;
+}
+
+input[type="text"] {
+    width:100%;
+    padding: 8px;
+    font-size: 22px;
+    margin-bottom: 5px;
+    border: 1px solid black;
+    background: white;
+}
+
+input[type="password"] {
+    width:100%;
+    padding: 8px;
+    font-size: 22px;
+    border: 1px solid black;
+    background: white;
+}

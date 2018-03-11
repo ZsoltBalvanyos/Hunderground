@@ -1,0 +1,65 @@
+@import controllers.security.User
+@(title: String)(content: Html)(implicit user: Option[User])
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>@title</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+
+        <script src="@routes.Assets.versioned("javascripts/hunderground.js")"></script>
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/main.css")"/>
+
+
+
+    </head>
+    <body>
+
+        <nav class="navbar navbar-inverse navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed btn btn-light" data-toggle="collapse" data-target="#myNavbar" aria-expanded="false">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="http://hundergroundband.com"><div class="logo">Hunderground</div></a>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a class="btn btn-light btn-nav" href="/events">Events</a></li>
+                        <li><a class="btn btn-light btn-nav" href="/budget">Budget</a></li>
+                        <li><a class="btn btn-light btn-nav" href="/songList">Song List</a></li>
+                        <li><a class="btn btn-light btn-nav" href="/getCalendar">Calendar</a></li>
+                        @if({user.isDefined}) {
+                            <li><a class="btn btn-light btn-nav" href="/signOut"><span class="glyphicon glyphicon-log-out"></span>Sign Out @{user.map(_.firstName).getOrElse("")}</a></li>
+                        } else {
+                            <li><a class="btn btn-light btn-nav" href="/signIn"><span class="glyphicon glyphicon-log-out"></span>Sign In</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        @content
+
+        <div class="footer row">
+            <ul>
+                <li>About</li>
+                <li>Contact</li>
+                <li>Cookies</li>
+                <li>Privacy Policy</li>
+            </ul>
+        </div>
+    </body>
+</html>
+

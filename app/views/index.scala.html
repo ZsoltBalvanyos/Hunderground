@@ -1,0 +1,24 @@
+@import controllers.security.User
+@(message: String)(implicit user: Option[User])
+
+@main("Home") {
+
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+    Hunderground opening site - @{user.map(_.firstName).getOrElse("shit")}
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+
+}

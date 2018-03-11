@@ -1,0 +1,59 @@
+.songs {
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+.tableHead {
+    padding: 0% 2%;
+    font-weight: bold;
+    color: lightgray;
+    background: gray;
+}
+.tableHeadElement {
+    float: left;
+}
+.artistTablehead {
+    width: 38%;
+}
+.titleTablehead {
+    width: 54%;
+}
+.keyTablehead {
+    width: 8%;
+    text-align: right;
+}
+.song {
+    border-bottom: solid 1px gray;
+    background: white;
+    padding: 0% 2%;
+}
+.artist {
+    width: 38%;
+    float: left;
+}
+.title {
+    width: 54%;
+    float: left;
+}
+.key {
+    width: 8%;
+    float: right;
+    text-align: right;
+}
+.close {
+    float: right;
+}
+
+.moveUp {
+    float: right;
+}
+
+i {
+    visibility: hidden;
+}
+
+.close:hover i, .close i:hover {
+    visibility: visible;
+}
+
+.moveUp:hover i, .moveUp i:hover {
+    visibility: visible;
+}

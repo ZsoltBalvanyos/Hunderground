@@ -1,0 +1,208 @@
+.navbar-inverse {
+    border-radius: 0px;
+    min-height:30px;
+    padding: 0px;
+    margin: 0px;
+}
+
+.message {
+    margin-top: 60px;
+    text-align: center;
+}
+
+.logo {
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 5px;
+    font-variant: small-caps;
+}
+
+
+label {
+    margin-right: 3px;
+    padding-left: 3px;
+    padding-right: 3px;
+    border-radius: 5px;
+    border: solid 1px black;
+    font-weight: 500;
+    font-size: 11px;
+
+    user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+}
+
+.holidayLabel {
+    background-color: lightpink;
+}
+.gigLabel {
+    background-color: sandybrown;
+}
+.rehearsalLabel {
+    background-color: yellowgreen;
+}
+.memoLabel {
+    background-color: lightskyblue;
+}
+
+.center-div {
+    position: absolute;
+    margin: auto;
+    top: 40%;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.day {
+    float: left;
+    width: 100%;
+    height: 20px;
+    outline: 1px solid black;
+    background: white;
+}
+
+.date {
+    float: left;
+    width: 15%;
+    height: 100%;
+    font-size: 9px;
+    font-weight: bold;
+    font-family: "Courier New", Courier, monospace;
+    text-align: right;
+    padding-top: 4px;
+    padding-right: 8px;
+
+    user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+}
+
+.memo {
+    float: left;
+    height: 100%;
+}
+
+i {
+    visibility: hidden;
+}
+
+.newEvent:hover i, .newEvent i:hover {
+    visibility: visible;
+    float: right;
+}
+
+.newEvent {
+    float: right;
+    width: 8%;
+    height: 18px;
+    background-color: Transparent;
+    border: none;
+}
+
+.newEvent:hover {
+    color: #222222;
+}
+
+.month {
+    padding: 0px;
+    /*margin-right: -1px;*/
+}
+
+.monthHeader {
+    font-family: "Trebuchet MS", sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    color: #222;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding-top: 6px;
+    width: 100%;
+}
+
+.empty {
+    opacity: 1;
+
+}
+
+.we {
+    background: #ffe472;
+}
+
+.songs {
+    padding: 0px;
+    width: 100%;
+    margin-top: 60px;
+    margin-bottom: 20px;
+}
+
+table {
+    background: white;
+    width: 100%;
+}
+
+.songs table thead {
+    text-align: center;
+    color: #9D9D9D;
+}
+
+.skinny {
+    padding: 0px;
+    margin: 0px;
+}
+
+.songs table td {
+    font-size: 14px;
+    padding: 2px;
+}
+
+.dropdown-menu {
+    position: inherit;
+    float: right;
+    background: grey;
+    min-width: 0px;
+}
+
+
+@media only screen and (orientation: landscape) {
+    .month {
+        height: 840px;
+    }
+    .empty {
+        height: 20px;
+    }
+
+    .date {
+        width: 14%;
+    }
+    .container {
+        width: 100%;
+        padding: 15px;
+    }
+}
+
+@media only screen and (orientation: portrait) {
+    body {
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .empty {
+        height: 0px;
+    }
+
+    .date {
+        width: 10%;
+    }
+    .container {
+        width: 100%;
+        margin: 0px;
+        padding: 10px;
+    }
+}

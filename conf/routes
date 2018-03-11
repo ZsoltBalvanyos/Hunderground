@@ -1,0 +1,10 @@
+
+GET     /                           controllers.HomeController.index
+GET     /index                      controllers.HomeController.index
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+
+GET     /signIn                      controllers.AuthController.signInForm
+GET     /signUp                      controllers.AuthController.signUpForm
+GET     /signOut                     controllers.AuthController.signOut
+POST    /signIn                      controllers.AuthController.signIn
+POST    /signUp                      controllers.AuthController.signUp
