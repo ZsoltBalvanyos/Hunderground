@@ -5,8 +5,9 @@ import java.time.{DayOfWeek, LocalDate, Month => MonthOfYear}
 import java.util.{GregorianCalendar, Locale}
 
 import com.google.inject.Inject
-import models.Event
-import repositories.EventRepository
+import models._
+import repositories.{EventRepository, UserRepository}
+import util.{AppError, InvalidDateOrderError}
 
 import scala.annotation.tailrec
 import scala.collection.immutable
@@ -15,14 +16,16 @@ import scala.concurrent.duration._
 
 case class Day(dayId: String,
                formattedDate: String,
-               events: List[Event],
+               events: List[CalendarEntry],
                style: String)
 
 case class Month(name: String, days: List[Day])
 
-class CalendarService @Inject() (eventRepository: EventRepository) {
+class CalendarService @Inject() (eventRepository: EventRepository,
+                                 userRepository: UserRepository) {
 
   private val viewFormat = DateTimeFormatter.ofPattern("dd")
+  private val rehearsalFormat = DateTimeFormatter.ofPattern("hh")
 
   def getCalendar(displayedMonths: Int,
                   placeHolderInMonth: Int,
@@ -47,8 +50,18 @@ class CalendarService @Inject() (eventRepository: EventRepository) {
       }
 
       def events = listOfSavedEvents.get(date) match {
-        case Some(events) => events.toList
-        case None         => List[Event]()
+        case Some(events) => getCalendarEntries(events)
+        case None         => List[CalendarEntry]()
+      }
+
+      def getCalendarEntries(events: Seq[Event]): List[CalendarEntry] = events.toList map {
+        case Gig(_, _, location)  => CalendarEntry(location, "gigLabel")
+        case Memo(_, _, memo)     => CalendarEntry(memo, "memoLabel")
+        case Holiday(_, _, userId) =>
+          val user = Await.result(userRepository.getUser(userId), 10 seconds).flatMap(_.firstName).getOrElse("anonymus")
+          CalendarEntry(user, "holidayLabel")
+        case Rehearsal(_, _, location, start, finish) =>
+          CalendarEntry(s"$location ${start.format(rehearsalFormat)}-${finish.format(rehearsalFormat)}", "rehearsalLabel")
       }
 
       Day(date.format(eventRepository.idFormat), formattedDate, events, weekend)
@@ -90,7 +103,7 @@ class CalendarService @Inject() (eventRepository: EventRepository) {
       MONTH_LENGTH(month - 1)
   }
 
-  val emptyDay  = Day("empty", "", List[Event](), "empty")
+  val emptyDay  = Day("empty", "", List[CalendarEntry](), "empty")
 
   def offset(year: Int, month: Int): immutable.Seq[Day] = {
     val localDate = LocalDate.of(year, month, 1)
@@ -98,7 +111,9 @@ class CalendarService @Inject() (eventRepository: EventRepository) {
     1 to offset map(_ => emptyDay)
   }
 
-  def addHoliday(start: LocalDate, end: LocalDate, person: String) = {
+  def addHoliday(start: LocalDate, end: LocalDate, person: Int): Either[AppError, Unit] = {
+
+    if(start.compareTo(end) > 0) return Left(InvalidDateOrderError(start, end))
 
     @tailrec
     def getPeriod(period: List[LocalDate] = List[LocalDate](), nextDay: LocalDate = start): List[LocalDate] = {
@@ -106,8 +121,11 @@ class CalendarService @Inject() (eventRepository: EventRepository) {
       getPeriod(nextDay :: period, nextDay.plusDays(1))
     }
 
-    getPeriod().foreach(date => eventRepository.create(person, date, person))
+    getPeriod().foreach(date => eventRepository.createHoliday(date, person))
 
+    Right()
   }
+
+  def getMembers = userRepository.getUsers
 
 }

@@ -23,7 +23,7 @@ class CalendarController @Inject()(val cc: ControllerComponents,
     val cal = Calendar.getInstance()
     val months = calendarService.getCalendar(12, 42, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1)
 
-    Future(Ok(views.html.calendar(months)))
+    calendarService.getMembers.map(members => Ok(views.html.calendar(months, members.toList)))
   }
 
 }

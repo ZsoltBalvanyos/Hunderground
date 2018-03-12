@@ -2,7 +2,7 @@
 @import services.Month
 @import controllers.security.User
 
-@(months: List[Month])(implicit user: Option[User])
+@(months: List[Month], users: List[User])(implicit user: Option[User])
 
 @main("Calendar") {
 
@@ -25,11 +25,11 @@
                                 <div class="date">@day.formattedDate</div>
                                 @for(event <- day.events) {
                                     <div class="memo">
-                                        <label type="text" id="@day.dayId" onchange="sendMemo('@day.dayId')" onfocus="setFocus('@day.dayId')" ondblclick="alert('OK edit')">
-                                            @if(event.description.length > 12) {
-                                                @event.description.take(10)...
+                                        <label type="text" id="@day.dayId" onchange="sendMemo('@day.dayId')" onfocus="setFocus('@day.dayId')" ondblclick="alert('OK edit')" class="@event.colour">
+                                            @if(event.legend.length > 15) {
+                                                @event.legend.take(10)...
                                             } else {
-                                                @event.description
+                                                @event.legend
                                             }
                                         </label>
                                     </div>
@@ -135,7 +135,13 @@
                 </div>
 
                 <div class="modal-body">
-                    <input id="person" name="person" size="50"/>
+                    <select id="person" name="person" style="position: inherit; background: inherit; border: 0px">
+                        <option value="">select...</option>
+                        @for(user <- users) {
+                            <option value="@{user.userID}">@user.firstName @user.lastName</option>
+                        }
+                    </select><br>
+                    <span>Until</span>
                     <input id="holidayTill" type="date">
                 </div>
 

@@ -7,14 +7,14 @@ import forms.{SignInForm, SignUpForm}
 import play.api.cache.SyncCacheApi
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import repositories.UserRepo
+import repositories.UserRepository
 import util.Constant
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuthController @Inject()(cc: ControllerComponents,
-                               userRepo: UserRepo,
+                               userRepo: UserRepository,
                                tokenManager: TokenManager,
                                cache: SyncCacheApi)(implicit ec: ExecutionContext)
   extends AbstractController(cc)

@@ -110,8 +110,7 @@ function addMemo(date) {
 
 function addHoliday(date) {
     focus = date
-    alert(date)
-    alert(focus)
+    $('#holidayTill').attr('min', date)
     $('#newHoliday').modal('show')
 }
 

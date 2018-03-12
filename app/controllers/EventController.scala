@@ -1,6 +1,6 @@
 package controllers
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalTime}
 
 import com.google.inject.Inject
 import controllers.security.{SecuredAction, SecuredController}
@@ -19,28 +19,28 @@ class EventController @Inject()(cc: ControllerComponents,
   def addRehearsal(date: String, location: String) = SecuredAction {implicit request =>
     implicit val user = request.user
 
-    eventRepository.create(location, getLocalDate(date), "rehearsal")
+    eventRepository.createRehearsal(getLocalDate(date), location, LocalTime.of(8, 0), LocalTime.of(11, 0))
     Ok
   }
 
   def addGig(date: String, location: String) = SecuredAction {implicit request =>
     implicit val user = request.user
 
-    eventRepository.create(location, getLocalDate(date), "gig")
+    eventRepository.createGig(getLocalDate(date), location)
     Ok
   }
 
   def addMemo(date: String, memo: String) = SecuredAction {implicit request =>
     implicit val user = request.user
 
-    eventRepository.create(memo, getLocalDate(date), "memo")
+    eventRepository.createMemo(getLocalDate(date), memo)
     Ok
   }
 
   def addHoliday(start: String, person: String, till: String) = SecuredAction {implicit request =>
     implicit val user = request.user
 
-    calendarService.addHoliday(getLocalDate(start), getLocalDate(till), person)
+    calendarService.addHoliday(getLocalDate(start), getLocalDate(till), person.toInt)
     Ok
   }
 
