@@ -14,8 +14,6 @@
 
             <fieldset>
 
-                <legend>Sing in</legend>
-
                 @helper.form(action = routes.AuthController.signIn()) {
                     @helper.inputText(signInForm("email"), '_showConstraints -> false, '_label -> "", 'placeholder -> "Email address", 'class -> "form-control input-lg")
                     @helper.inputPassword(signInForm("password"), '_showConstraints -> false, '_label -> "", 'placeholder -> "Password", 'class -> "form-control input-lg")
@@ -23,7 +21,7 @@
 
                     <div class="form-group">
                         <div>
-                            <button id="submit" type="submit" value="submit" class="btn btn-lg btn-primary btn-block">Sing In</button>
+                            <input id="submit" type="submit" value="Sign In" class="btn btn-lg btn-block"/>
                         </div>
                     </div>
                 }

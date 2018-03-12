@@ -8,6 +8,11 @@ body {
     color: #9D9D9D;
     min-height: 20px;
 
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
 }
 
 .footer ul {
@@ -34,7 +39,5 @@ body {
 }
 
 input[type="submit"] {
-    float:right;
-    margin: 10px;
     background: #ffe472;
 }
