@@ -1,17 +1,37 @@
 version: 2
 jobs:
-  build:
-    docker:
-      - image: circleci/openjdk:8-jdk
+#  build:
+#    docker:
+#      - image: circleci/openjdk:8-jdk
+#
+#    steps:
+#      - checkout
+#      - run: echo "hello world in build"
+#
+#  test:
+#      docker:
+#        - image: circleci/openjdk:8-jdk
+#
+#      steps:
+#        - checkout
+#        - run: echo "hello world in test"
+#
 
-    steps:
-      - checkout
-      - run: echo "hello world in build"
+  machine:
+    environment:
+      SBT_VERSION: 1.1.1
+    java:
+      version: openjdk8
+
+  dependencies:
+    override:
+      - sbt update
+    pre:
+      - sbt about
+    cache_directories:
+      - "~/.ivy2"
+      - "~/.sbt"
 
   test:
-      docker:
-        - image: circleci/openjdk:8-jdk
-
-      steps:
-        - checkout
-        - run: echo "hello world in test"
+    override:
+      - sbt test
