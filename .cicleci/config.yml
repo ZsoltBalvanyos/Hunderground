@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/classic:edge
+      - image: circleci/openjdk:8-jdk
 
     steps:
       - checkout

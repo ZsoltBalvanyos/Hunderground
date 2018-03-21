@@ -123,7 +123,7 @@ class CalendarService @Inject() (eventRepository: EventRepository,
 
     getPeriod().foreach(date => eventRepository.createHoliday(date, person))
 
-    Right()
+    Right(())
   }
 
   def getMembers = userRepository.getUsers
