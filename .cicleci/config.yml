@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
+      - image: circleci/classic:edge
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -21,9 +21,6 @@ jobs:
         - ~/.sbt
       pre:
         - pip install awscli
-      override:
-        - "./activator compile":
-            timeout: 300
 
     environment:
       # Customize the JVM maximum heap limit
