@@ -20,3 +20,6 @@ POST    /event/rehearsal/:date/:location    controllers.EventController.addRehea
 POST    /event/gig/:date/:location          controllers.EventController.addGig(date, location)
 POST    /event/memo/:date/:memo             controllers.EventController.addMemo(date, memo)
 POST    /event/holiday/:date/:person/:till  controllers.EventController.addHoliday(date, person, till)
+
+GET     /sample                         controllers.HomeController.sampleForm
+POST    /sample                         controllers.HomeController.sample

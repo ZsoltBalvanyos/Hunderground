@@ -23,7 +23,9 @@ libraryDependencies ++= Seq(
   PlaySlick.slick,
   PlaySlick.slickEvolutions,
   specs2 % Test,
-  scalaTest
+  scalaTest,
+  scalaCheck,
+  scalaCheckShapeless
 )
 
 unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )

@@ -2,12 +2,15 @@ import sbt._
 
 object Dependencies {
 
-  val slick           = "com.typesafe.slick"   % "slick_2.11"            % "3.0.0"
-  val h2              = "com.h2database"       % "h2"                    % "1.4.196"
-  val mysql           = "mysql"                % "mysql-connector-java"  % "5.1.16"
-  val typeSafeConfig  = "com.typesafe"         % "config"                % "1.3.1"
-  val abstractj       = "org.abstractj.kalium" % "kalium" % "0.7.0"
-  val scalaTest       = "org.scalatest"       %% "scalatest" % "3.0.3"   %  Test
+  lazy val slick           = "com.typesafe.slick"   % "slick_2.11"            % "3.0.0"
+  lazy val h2              = "com.h2database"       % "h2"                    % "1.4.196"
+  lazy val mysql           = "mysql"                % "mysql-connector-java"  % "5.1.16"
+  lazy val typeSafeConfig  = "com.typesafe"         % "config"                % "1.3.1"
+  lazy val abstractj       = "org.abstractj.kalium" % "kalium"                % "0.7.0"
+  lazy val scalaTest       = "org.scalatest"       %% "scalatest"             % "3.0.3"   % Test
+  lazy val scalaCheck      = "org.scalacheck"      %% "scalacheck"            % "1.13.5"  % Test
+  lazy val scalaCheckShapeless = "com.github.alexarchambault" %% "scalacheck-shapeless_1.13" % "1.1.6" % Test
+
 
   object PlaySlick {
     private val version = "3.0.3"
