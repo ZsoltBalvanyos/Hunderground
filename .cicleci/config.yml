@@ -16,6 +16,15 @@ jobs:
 
     working_directory: ~/hunderground
 
+    dependencies:
+      cache_directories:
+        - ~/.sbt
+      pre:
+        - pip install awscli
+      override:
+        - "./activator compile":
+            timeout: 300
+
     environment:
       # Customize the JVM maximum heap limit
       JVM_OPTS: -Xmx3200m
