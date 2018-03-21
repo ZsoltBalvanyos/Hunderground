@@ -18,21 +18,14 @@ jobs:
 #
 
   machine:
-    environment:
-      SBT_VERSION: 1.1.1
     java:
       version: openjdk8
 
   dependencies:
-    pre:
-      - wget -q https://dl.bintray.com/sbt/debian/sbt-1.1.1.deb
-      - sudo dpkg -i sbt-1.1.1.deb
     override:
       - sbt update
-    cache_directories:
-      - "~/.ivy2"
-      - "~/.sbt"
 
   test:
     override:
+      - checkout
       - sbt test
