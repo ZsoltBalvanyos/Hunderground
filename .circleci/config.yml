@@ -1,0 +1,14 @@
+version: 2
+jobs:
+  machine:
+    java:
+      version: openjdk8
+
+  dependencies:
+    override:
+      - sbt update
+
+  test:
+    override:
+      - checkout
+      - sbt test
