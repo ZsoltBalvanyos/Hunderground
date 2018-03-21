@@ -21,6 +21,8 @@ jobs:
         - ~/.sbt
       pre:
         - pip install awscli
+      override:
+          - sbt update
 
     environment:
       # Customize the JVM maximum heap limit
