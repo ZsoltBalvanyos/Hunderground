@@ -6,4 +6,12 @@ jobs:
 
     steps:
       - checkout
-      - run: echo "hello world"
+      - run: echo "hello world in build"
+
+  test:
+      docker:
+        - image: circleci/openjdk:8-jdk
+
+      steps:
+        - checkout
+        - run: echo "hello world in test"
