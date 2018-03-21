@@ -1,14 +1,9 @@
 version: 2
 jobs:
-  machine:
-    java:
-      version: openjdk8
+  build:
+    docker:
+      - image: circleci/openjdk:8-jdk
 
-  dependencies:
-    override:
-      - sbt update
-
-  test:
-    override:
+    steps:
       - checkout
       - sbt test
