@@ -23,5 +23,3 @@ libraryDependencies ++= Seq(
   scalaCheck,
   scalaCheckShapeless
 )
-
-unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )
