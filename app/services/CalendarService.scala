@@ -25,7 +25,7 @@ class CalendarService @Inject() (eventRepository: EventRepository,
                                  userRepository: UserRepository) {
 
   private val viewFormat = DateTimeFormatter.ofPattern("dd")
-  private val rehearsalFormat = DateTimeFormatter.ofPattern("hh")
+  private val rehearsalFormat = DateTimeFormatter.ofPattern("HH")
 
   def getCalendar(displayedMonths: Int,
                   placeHolderInMonth: Int,
@@ -55,13 +55,13 @@ class CalendarService @Inject() (eventRepository: EventRepository,
       }
 
       def getCalendarEntries(events: Seq[Event]): List[CalendarEntry] = events.toList map {
-        case Gig(_, _, location)  => CalendarEntry(location, "gigLabel")
-        case Memo(_, _, memo)     => CalendarEntry(memo, "memoLabel")
-        case Holiday(_, _, userId) =>
+        case gig @ Gig(_, _, location)        => CalendarEntry(location, "gigLabel", gig)
+        case memo @ Memo(_, _, text)          => CalendarEntry(text, "memoLabel", memo)
+        case holiday @ Holiday(_, _, userId, _, _)  =>
           val user = Await.result(userRepository.getUser(userId), 10 seconds).flatMap(_.firstName).getOrElse("anonymus")
-          CalendarEntry(user, "holidayLabel")
-        case Rehearsal(_, _, location, start, finish) =>
-          CalendarEntry(s"$location ${start.format(rehearsalFormat)}-${finish.format(rehearsalFormat)}", "rehearsalLabel")
+          CalendarEntry(user, "holidayLabel", holiday)
+        case rehearsal @ Rehearsal(_, _, location, start, finish) =>
+          CalendarEntry(s"$location ${start.format(rehearsalFormat)}-${finish.format(rehearsalFormat)}", "rehearsalLabel", rehearsal)
       }
 
       Day(date.format(eventRepository.idFormat), formattedDate, events, weekend)
@@ -111,17 +111,17 @@ class CalendarService @Inject() (eventRepository: EventRepository,
     1 to offset map(_ => emptyDay)
   }
 
-  def addHoliday(start: LocalDate, end: LocalDate, person: Int): Either[AppError, Unit] = {
+  def addHoliday(start: LocalDate, finish: LocalDate, person: Int): Either[AppError, Unit] = {
 
-    if(start.compareTo(end) > 0) return Left(InvalidDateOrderError(start, end))
+    if(start.compareTo(finish) > 0) return Left(InvalidDateOrderError(start, finish))
 
     @tailrec
     def getPeriod(period: List[LocalDate] = List[LocalDate](), nextDay: LocalDate = start): List[LocalDate] = {
-      if(nextDay.isEqual(end)) return nextDay :: period
+      if(nextDay.isEqual(finish)) return nextDay :: period
       getPeriod(nextDay :: period, nextDay.plusDays(1))
     }
 
-    getPeriod().foreach(date => eventRepository.createHoliday(date, person))
+    getPeriod().foreach(date => eventRepository.createHoliday(date, person, start, finish))
 
     Right(())
   }

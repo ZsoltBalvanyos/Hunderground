@@ -8,8 +8,6 @@ import util.CommonSpec
 
 class SongRepositorySpec extends FlatSpec with CommonSpec {
 
-  case class RawSong(artist: String, title: String, status: String, key: String)
-
   val songRepository: SongRepository = new GuiceApplicationBuilder().injector().instanceOf[SongRepository]
 
   it should "save and store song" in forAll() { rawSong: RawSong =>

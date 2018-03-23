@@ -1,0 +1,109 @@
+@import controllers.security.User
+@(gigs: Seq[Gig], rehearsals: Seq[Rehearsal], holidays: Seq[HolidayDisplay], memos: Seq[Memo])(implicit user: Option[User])
+
+@main("Events") {
+
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/events.css")"/>
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/songs.css")"/>
+
+
+    <div class="container">
+
+        <div class="col-md-3"></div>
+
+        <div class="col-xs-12 col-md-6 fitScreen">
+
+            <div id="songs" class="songs header-drop">
+
+                <h3>Gigs</h3>
+
+                <div class="row tableHead">
+                    <div class="artistTablehead tableHeadElement">Date</div>
+                    <div class="titleTablehead tableHeadElement">Description</div>
+                </div>
+
+                @for(gig <- gigs) {
+                    <div class="row song">
+                        <div class="artist">@gig.date</div>
+                        <div class="title">@{gig.location}</div>
+                    </div>
+                }
+
+                <br/>
+
+                <hr/>
+            </div>
+
+
+            <div id="songs" class="songs header-drop">
+
+                <h3>Rehearsals</h3>
+
+                <div class="row tableHead">
+                    <div class="artistTablehead tableHeadElement">Date</div>
+                    <div class="titleTablehead tableHeadElement">Description</div>
+                </div>
+
+                @for(rehearsal <- rehearsals) {
+                    <div class="row song">
+                        <div class="artist">@rehearsal.date</div>
+                        <div class="title">@{rehearsal.location}</div>
+                    </div>
+                }
+
+                <br/>
+
+                <hr/>
+            </div>
+
+
+            <div id="songs" class="songs header-drop">
+
+                <h3>Memos</h3>
+
+                <div class="row tableHead">
+                    <div class="artistTablehead tableHeadElement">Date</div>
+                    <div class="titleTablehead tableHeadElement">Description</div>
+                </div>
+
+                @for(memo <- memos) {
+                    <div class="row song">
+                        <div class="artist">@memo.date</div>
+                        <div class="title">@{memo.memo}</div>
+                    </div>
+                }
+
+                <br/>
+
+                <hr/>
+            </div>
+
+
+            <div id="songs" class="songs header-drop">
+
+                <h3>Holidays</h3>
+
+                <div class="row tableHead">
+                    <div class="artistTablehead tableHeadElement">Name</div>
+                    <div class="titleTablehead tableHeadElement">Period</div>
+                </div>
+
+                @for(holiday <- holidays) {
+                    <div class="row song">
+                        <div class="artist">@holiday.name</div>
+                        <div class="title">@{holiday.start} -> @{holiday.finish}</div>
+                    </div>
+                }
+
+                <br/>
+
+                <hr/>
+            </div>
+
+        </div>
+
+        <div class="col-md-3"></div>
+
+    </div>
+
+}

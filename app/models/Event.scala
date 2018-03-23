@@ -27,7 +27,7 @@ sealed trait Event {
 }
 
 case class Memo(eventId: Long, date: LocalDate, memo: String) extends Event
-case class Holiday(eventId: Long, date: LocalDate, userId: Int) extends Event
+case class Holiday(eventId: Long, date: LocalDate, userId: Int, start: LocalDate, finish: LocalDate) extends Event
 case class Gig(eventId: Long, date: LocalDate, location: String) extends Event
 case class Rehearsal(eventId: Long, date: LocalDate, location: String, start: LocalTime, finish: LocalTime) extends Event {
 
@@ -46,4 +46,6 @@ case class Rehearsal(eventId: Long, date: LocalDate, location: String, start: Lo
   }
 }
 
-case class CalendarEntry(legend: String, colour: String)
+case class CalendarEntry(legend: String, colour: String, event: Event)
+
+case class HolidayDisplay(name: String, start: LocalDate, finish: LocalDate)

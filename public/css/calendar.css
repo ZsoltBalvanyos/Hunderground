@@ -35,19 +35,6 @@ label {
     -o-user-select: none;
 }
 
-.holidayLabel {
-    background-color: lightpink;
-}
-.gigLabel {
-    background-color: lightskyblue;
-}
-.rehearsalLabel {
-    background-color: yellowgreen;
-}
-.memoLabel {
-    background-color: sandybrown;
-}
-
 .center-div {
     position: absolute;
     margin: auto;

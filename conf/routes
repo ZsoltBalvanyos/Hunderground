@@ -11,15 +11,26 @@ POST    /signIn                      controllers.AuthController.signIn
 POST    /signUp                      controllers.AuthController.signUp
 
 GET     /getCalendar                        controllers.CalendarController.getCalendar
+GET     /events                             controllers.EventController.getEvents
 
 GET     /songList                           controllers.SongController.getSongs()
 POST    /song/:artist/:title/:key/:status   controllers.SongController.addSong(artist, title, key, status)
 DELETE  /song/:songId                       controllers.SongController.deleteSong(songId)
 
-POST    /event/rehearsal/:date/:location    controllers.EventController.addRehearsal(date, location)
-POST    /event/gig/:date/:location          controllers.EventController.addGig(date, location)
-POST    /event/memo/:date/:memo             controllers.EventController.addMemo(date, memo)
-POST    /event/holiday/:date/:person/:till  controllers.EventController.addHoliday(date, person, till)
+POST    /event/rehearsal/:date/:location/:start/:duration    controllers.EventController.addRehearsal(date, location, start, duration)
+POST    /event/gig/:date/:location                           controllers.EventController.addGig(date, location)
+POST    /event/memo/:date/:memo                              controllers.EventController.addMemo(date, memo)
+POST    /event/holiday/:date/:person/:till                   controllers.EventController.addHoliday(date, person, till)
+
+PUT     /event/rehearsal/:date/:location/:start/:duration/:eventId         controllers.EventController.updateRehearsal(date, location, start, duration, eventId)
+PUT     /event/gig/:date/:location/:eventId                                controllers.EventController.updateGig(date, location, eventId)
+PUT     /event/memo/:date/:memo/:eventId                                   controllers.EventController.updateMemo(date, memo, eventId)
+PUT     /event/holiday/:person/:oldStart/:oldFinish/:newStart/:newFinish   controllers.EventController.updateHoliday(person, oldStart, oldFinish, newStart, newFinish)
+
+DELETE  /event/rehearsal/:eventId                            controllers.EventController.deleteRehearsal(eventId)
+DELETE  /event/gig/:eventId                                  controllers.EventController.deleteGig(eventId)
+DELETE  /event/memo/:eventId                                 controllers.EventController.deleteMemo(eventId)
+DELETE  /event/holiday/:userId/:start/:finish                controllers.EventController.deleteHoliday(userId, start, finish)
 
 GET     /sample                         controllers.HomeController.sampleForm
 POST    /sample                         controllers.HomeController.sample

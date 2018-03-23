@@ -25,20 +25,20 @@
 
                 @for(song <- songs) {
                     <div class="row song">
-                        <div class="artist" ondblclick="editSong('@song.songId','@song.artist','@song.title','@song.key','song')">@song.artist</div>
-                        <div class="title" ondblclick="editSong('@song.songId','@song.artist','@song.title','@song.key','song')">
+                        <div class="artist" ondblclick="editSong('@song.songId','@song.artist','@song.title','@song.key','ready')">@song.artist</div>
+                        <div class="title" ondblclick="editSong('@song.songId','@song.artist','@song.title','@song.key','ready')">
                             @song.title
                             <div class="close">
                                 <i class="fa fa-window-close" onclick="deleteSong('@song.songId')"></i>
                             </div>
                         </div>
-                        <div class="key" ondblclick="editSong('@song.songId','@song.artist','@song.title','@song.key','song')">@song.key.replace('s', '#')</div>
+                        <div class="key" ondblclick="editSong('@song.songId','@song.artist','@song.title','@song.key','ready')">@song.key.replace('s', '#')</div>
                     </div>
                 }
 
                 <br/>
 
-                <button type="button" class="btn button" onclick="openModal('song')">
+                <button type="button" class="btn button" onclick="openModal('ready')">
                     Add song
                 </button>
 

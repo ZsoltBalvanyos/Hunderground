@@ -4,18 +4,13 @@ import java.sql.{Date, Time}
 import java.time.{LocalDate, LocalTime}
 import java.time.format.DateTimeFormatter
 
-import cats.Applicative
 import com.google.inject.Inject
 import models._
 import play.api.db.slick.DatabaseConfigProvider
-import slick.jdbc.JdbcProfile
+import slick.jdbc.{JdbcBackend, JdbcProfile}
+import slick.lifted.ProvenShape
 
 import scala.concurrent.{ExecutionContext, Future}
-import cats.data._
-import cats.implicits._
-import cats.instances.future._
-
-import scala.collection.immutable
 
 class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
 
@@ -55,12 +50,12 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
 
 
   /*GIG*/
-  private class GigTable(tag: Tag) extends Table[Gig](tag, "gig") {
+  implicit private class GigTable(tag: Tag) extends Table[Gig](tag, "gig") {
     def eventId     = column[Long]("event_id", O.PrimaryKey, O.AutoInc)
     def date        = column[LocalDate]("date")
     def location    = column[String]("location")
 
-    def * = (eventId, date, location) <> ((Gig.apply _).tupled, Gig.unapply)
+    def * : ProvenShape[Gig] = (eventId, date, location) <> ((Gig.apply _).tupled, Gig.unapply)
   }
 
   private val gigs = TableQuery[GigTable]
@@ -81,6 +76,14 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
     gigs.filter(_.date > LocalDate.of(year, month, 1)).result
   }
 
+  def deleteGig(eventId: String): Future[Int] = db.run {
+    gigs.filter(_.eventId === eventId.toLong).delete
+  }
+
+  def updateGig(gig: Gig) = db.run {
+    gigs.filter(_.eventId === gig.eventId).update(gig)
+  }
+
   /*MEMO*/
   private class MemoTable(tag: Tag) extends Table[Memo](tag, "memo") {
     def eventId     = column[Long]("event_id", O.PrimaryKey, O.AutoInc)
@@ -90,7 +93,7 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
     def * = (eventId, date, memo) <> ((Memo.apply _).tupled, Memo.unapply)
   }
 
-  private val memos = TableQuery[MemoTable]
+  private val memos: TableQuery[MemoTable]= TableQuery[MemoTable]
   db.run(DBIO.seq(memos.schema.create))
 
   def createMemo(date: LocalDate, memo: String): Future[Memo] = db.run {
@@ -108,23 +111,33 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
     memos.filter(_.date > LocalDate.of(year, month, 1)).result
   }
 
+  def deleteMemo(eventId: String): Future[Int] = db.run {
+    memos.filter(_.eventId === eventId.toLong).delete
+  }
+
+  def updateMemo(memo: Memo) = db.run {
+    memos.filter(_.eventId === memo.eventId).update(memo)
+  }
+
   /*HOLIDAY*/
   private class HolidayTable(tag: Tag) extends Table[Holiday](tag, "holiday") {
     def eventId     = column[Long]("event_id", O.PrimaryKey, O.AutoInc)
     def date        = column[LocalDate]("date")
     def userId      = column[Int]("user_id")
+    def start       = column[LocalDate]("start")
+    def finish      = column[LocalDate]("finish")
 
-    def * = (eventId, date, userId) <> ((Holiday.apply _).tupled, Holiday.unapply)
+    def * = (eventId, date, userId, start, finish) <> ((Holiday.apply _).tupled, Holiday.unapply)
   }
 
   private val holidays = TableQuery[HolidayTable]
   db.run(DBIO.seq(holidays.schema.create))
 
-  def createHoliday(date: LocalDate, userId: Int): Future[Holiday] = db.run {
-    (holidays.map(e => (e.date, e.userId))
+  def createHoliday(date: LocalDate, userId: Int, start: LocalDate, finish: LocalDate): Future[Holiday] = db.run {
+    (holidays.map(e => (e.date, e.userId, e.start, e.finish))
       returning holidays.map(_.eventId)
-      into ((data, id) => Holiday(id, data._1, data._2))
-      ) += (date, userId)
+      into ((data, id) => Holiday(id, data._1, data._2, data._3, data._4))
+      ) += (date, userId, start, finish)
   }
 
   def listHolidays(): Future[Seq[Holiday]] = db.run {
@@ -133,6 +146,22 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
 
   def futureHolidays(year: Int, month: Int): Future[Seq[Holiday]] = db.run {
     holidays.filter(_.date > LocalDate.of(year, month, 1)).result
+  }
+
+  def deleteHoliday(eventId: String): Future[Int] = db.run {
+    holidays.filter(_.eventId === eventId.toLong).delete
+  }
+
+  def deleteHoliday(userId: Int, start: LocalDate, finish: LocalDate): Future[Int] = db.run {
+    holidays
+      .filter(_.userId === userId)
+      .filter(_.start >= start)
+      .filter(_.finish <= finish)
+      .delete
+  }
+
+  def updateHoliday(holiday: Holiday) = db.run {
+    holidays.filter(_.eventId === holiday.eventId).update(holiday)
   }
 
   /*REHEARSAL*/
@@ -164,5 +193,12 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
     rehearsals.filter(_.date > LocalDate.of(year, month, 1)).result
   }
 
+  def deleteRehearsal(eventId: String): Future[Int] = db.run {
+    rehearsals.filter(_.eventId === eventId.toLong).delete
+  }
+
+  def updateRehearsal(rehearsal: Rehearsal) = db.run {
+    rehearsals.filter(_.eventId === rehearsal.eventId).update(rehearsal)
+  }
 
 }

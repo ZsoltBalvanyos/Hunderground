@@ -36,11 +36,12 @@
                 </div>
                 <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a class="btn btn-light btn-nav" href="/events">Events</a></li>
-                        <li><a class="btn btn-light btn-nav" href="/budget">Budget</a></li>
-                        <li><a class="btn btn-light btn-nav" href="/songList">Song List</a></li>
-                        <li><a class="btn btn-light btn-nav" href="/getCalendar">Calendar</a></li>
+
                         @if({user.isDefined}) {
+                            <li><a class="btn btn-light btn-nav" href="/events">Events</a></li>
+                            <li><a class="btn btn-light btn-nav" href="/budget">Budget</a></li>
+                            <li><a class="btn btn-light btn-nav" href="/songList">Song List</a></li>
+                            <li><a class="btn btn-light btn-nav" href="/getCalendar">Calendar</a></li>
                             <li><a class="btn btn-light btn-nav" href="/signOut"><span class="glyphicon glyphicon-log-out"></span>Sign Out @{user.map(_.firstName).getOrElse("")}</a></li>
                         } else {
                             <li><a class="btn btn-light btn-nav" href="/signIn"><span class="glyphicon glyphicon-log-out"></span>Sign In</a></li>

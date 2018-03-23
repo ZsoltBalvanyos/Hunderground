@@ -65,7 +65,7 @@ function moveUp(songId, artist, title, key) {
     var reqDelete = new XMLHttpRequest();
     var reqPost = new XMLHttpRequest();
     reqDelete.open("DELETE", "song/" + songId);
-    reqPost.open("POST", "song/" + artist + "/" + title + "/" + key + "/song");
+    reqPost.open("POST", "song/" + artist + "/" + title + "/" + key + "/ready");
 
     reqDelete.send();
     reqPost.send();
@@ -120,7 +120,7 @@ function saveEvent(type) {
     if(type === 'gig') {
         req.open("POST", "event/gig/" + focus + "/" + $("#gigLocation").val());
     } else if(type === 'rehearsal') {
-        req.open("POST", "event/rehearsal/" + focus + "/" + $("#rehearsalLocation").val());
+        req.open("POST", "event/rehearsal/" + focus + "/" + $("#rehearsalLocation").val()+ "/" + $("#rehearsalStart").val()+ "/" + $("#rehearsalDuration").val());
     } else if(type === 'memo') {
         req.open("POST", "event/memo/" + focus + "/" + $("#memo").val());
     } else if(type === 'holiday') {
@@ -134,4 +134,142 @@ function saveEvent(type) {
     };
 
     req.send();
+}
+
+function editRehearsal(eventId, date, loc) {
+    focus = date
+
+    $("#rehearsalLocationEdit").val(loc);
+
+    $("#deleteRehearsal").click( function() {
+        var req = new XMLHttpRequest();
+        req.open("DELETE", "event/rehearsal/" + eventId);
+        $('#editRehearsal').modal('hide')
+
+        req.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                location.reload();
+            }
+        };
+        req.send();
+    });
+
+    $("#submitRehearsal").click( function() {
+        var req = new XMLHttpRequest();
+        req.open("PUT", "event/rehearsal/" + focus + "/" + $("#rehearsalLocationEdit").val() + "/" + eventId);
+        $('#editRehearsal').modal('hide')
+
+        req.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                location.reload();
+            }
+        };
+        req.send();
+    });
+
+    $('#editRehearsal').modal('show')
+}
+
+function editGig(eventId, date, loc) {
+    focus = date
+
+    $("#gigLocationEdit").val(loc);
+
+    $("#deleteGig").click(function(){
+        var req = new XMLHttpRequest();
+        req.open("DELETE", "event/gig/" + eventId);
+        $('#editGig').modal('hide')
+
+        req.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                location.reload();
+            }
+        };
+        req.send();
+    });
+
+    $("#submitGig").click( function() {
+        var req = new XMLHttpRequest();
+        req.open("PUT", "event/gig/" + focus + "/" + $("#gigLocationEdit").val() + "/" + eventId);
+        $('#editGig').modal('hide')
+
+        req.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                location.reload();
+            }
+        };
+        req.send();
+    });
+
+    $('#editGig').modal('show')
+}
+
+function editMemo(eventId, date, memo) {
+    focus = date
+
+    $("#memoEdit").val(memo);
+
+    $("#deleteMemo").click(function(){
+        var req = new XMLHttpRequest();
+        req.open("DELETE", "event/memo/" + eventId);
+        $('#editMemo').modal('hide')
+
+        req.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                location.reload();
+            }
+        };
+        req.send();
+    });
+
+    $("#submitMemo").click( function() {
+        var req = new XMLHttpRequest();
+        req.open("PUT", "event/memo/" + focus + "/" + $("#memoEdit").val() + "/" + eventId);
+        $('#editMemo').modal('hide')
+
+        req.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                location.reload();
+            }
+        };
+        req.send();
+    });
+
+    $('#editMemo').modal('show')
+}
+
+function editHoliday(eventId, date, userId, start, finish) {
+    focus = date
+    $('#holidayTillEdit').attr('min', start);
+    $('#holidayStartEdit').val(start);
+    $('#holidayTillEdit').val(finish);
+    $("#personEdit").val(userId);
+
+    $("#deleteHoliday").click(function(){
+        var req = new XMLHttpRequest();
+        req.open("DELETE", "event/holiday/" + userId + "/" + start + "/" + finish);
+        $('#editHoliday').modal('hide')
+
+        req.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                location.reload();
+            }
+        }
+        req.send();
+    });
+
+    $("#submitHoliday").click( function() {
+        var req = new XMLHttpRequest();
+        req.open("PUT", "event/holiday/" + $("#personEdit").val() + "/" + start + "/" + finish + "/" + $("#holidayStartEdit").val()  + "/" + $("#holidayTillEdit").val());
+        $('#editHoliday').modal('hide')
+
+        req.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                location.reload();
+            }
+        };
+        req.send();
+    });
+
+    $('#editHoliday').modal('show')
 }
