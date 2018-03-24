@@ -32,5 +32,8 @@ DELETE  /event/gig/:eventId                                  controllers.EventCo
 DELETE  /event/memo/:eventId                                 controllers.EventController.deleteMemo(eventId)
 DELETE  /event/holiday/:userId/:start/:finish                controllers.EventController.deleteHoliday(userId, start, finish)
 
-GET     /sample                         controllers.HomeController.sampleForm
-POST    /sample                         controllers.HomeController.sample
+#GET     /sample                         controllers.HomeController.sampleForm
+#POST    /sample                         controllers.HomeController.sample
+
+GET     /budget                         controllers.HomeController.budgetForm
+POST    /budget                         controllers.HomeController.budget

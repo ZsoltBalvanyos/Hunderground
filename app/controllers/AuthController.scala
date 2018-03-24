@@ -27,7 +27,7 @@ class AuthController @Inject()(cc: ControllerComponents,
     val uri = request
       .cookies.get(Constant.playSession)
       .flatMap(cookie => cache.get[String](s"${cookie.value}-${Constant.afterLogin}"))
-      .getOrElse("/index")
+      .getOrElse("/getCalendar")
 
     Future.successful(Redirect(uri, 301).withCookies(Cookie(Constant.tokenName, nextToken, Some(60 * 60 * 24 * 90))))
   }

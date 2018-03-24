@@ -3,6 +3,7 @@ package repositories
 import java.sql.{Date, Time}
 import java.time.{LocalDate, LocalTime}
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.atomic.AtomicLong
 
 import com.google.inject.Inject
 import models._
@@ -17,6 +18,26 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
   private val dbConfig = dbConfigProvider.get[JdbcProfile]
   import dbConfig._
   import profile.api._
+
+  val eventId = new AtomicLong(0)
+
+  case class EventId(id: Long)
+
+  implicit private class EventIdTable(tag: Tag) extends Table[EventId](tag, "event_id") {
+    def eventId     = column[Long]("id", O.PrimaryKey, O.AutoInc)
+    override def * = eventId <> ((EventId.apply _), EventId.unapply)
+  }
+
+  private val eventIds = TableQuery[EventIdTable]
+  db.run(DBIO.seq(eventIds.schema.create))
+
+  def getEventId: Future[EventId] = db.run {
+    (eventIds.map(e => ())
+      returning eventIds.map(_.eventId)
+      into ((data, id) => EventId(id))
+      ) += ()
+  }
+
 
   val idFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
@@ -51,22 +72,20 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
 
   /*GIG*/
   implicit private class GigTable(tag: Tag) extends Table[Gig](tag, "gig") {
-    def eventId     = column[Long]("event_id", O.PrimaryKey, O.AutoInc)
+    def eventId     = column[Long]("event_id", O.PrimaryKey)
     def date        = column[LocalDate]("date")
     def location    = column[String]("location")
 
-    def * : ProvenShape[Gig] = (eventId, date, location) <> ((Gig.apply _).tupled, Gig.unapply)
+    def * = (eventId, date, location) <> ((Gig.apply _).tupled, Gig.unapply)
   }
 
   private val gigs = TableQuery[GigTable]
   db.run(DBIO.seq(gigs.schema.create))
 
-  def createGig(date: LocalDate, location: String): Future[Gig] = db.run {
-    (gigs.map(e => (e.date, e.location))
-      returning gigs.map(_.eventId)
-      into ((data, id) => Gig(id, data._1, data._2))
-      ) += (date, location)
-  }
+  def createGig(date: LocalDate, location: String): Future[Gig] =
+    getEventId
+      .map(eventId => Gig(eventId.id, date, location))
+      .flatMap(gig => db.run(gigs +=  gig).map(_ => gig))
 
   def listGigs(): Future[Seq[Gig]] = db.run {
     gigs.result
@@ -86,7 +105,7 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
 
   /*MEMO*/
   private class MemoTable(tag: Tag) extends Table[Memo](tag, "memo") {
-    def eventId     = column[Long]("event_id", O.PrimaryKey, O.AutoInc)
+    def eventId     = column[Long]("event_id", O.PrimaryKey)
     def date        = column[LocalDate]("date")
     def memo    = column[String]("memo")
 
@@ -96,12 +115,10 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
   private val memos: TableQuery[MemoTable]= TableQuery[MemoTable]
   db.run(DBIO.seq(memos.schema.create))
 
-  def createMemo(date: LocalDate, memo: String): Future[Memo] = db.run {
-    (memos.map(e => (e.date, e.memo))
-      returning memos.map(_.eventId)
-      into ((data, id) => Memo(id, data._1, data._2))
-      ) += (date, memo)
-  }
+  def createMemo(date: LocalDate, text: String): Future[Memo] =
+    getEventId
+      .map(eventId => Memo(eventId.id, date, text))
+      .flatMap(memo => db.run(memos += memo).map(_ => memo))
 
   def listMemos(): Future[Seq[Memo]] = db.run {
     memos.result
@@ -121,7 +138,7 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
 
   /*HOLIDAY*/
   private class HolidayTable(tag: Tag) extends Table[Holiday](tag, "holiday") {
-    def eventId     = column[Long]("event_id", O.PrimaryKey, O.AutoInc)
+    def eventId     = column[Long]("event_id", O.PrimaryKey)
     def date        = column[LocalDate]("date")
     def userId      = column[Int]("user_id")
     def start       = column[LocalDate]("start")
@@ -133,12 +150,11 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
   private val holidays = TableQuery[HolidayTable]
   db.run(DBIO.seq(holidays.schema.create))
 
-  def createHoliday(date: LocalDate, userId: Int, start: LocalDate, finish: LocalDate): Future[Holiday] = db.run {
-    (holidays.map(e => (e.date, e.userId, e.start, e.finish))
-      returning holidays.map(_.eventId)
-      into ((data, id) => Holiday(id, data._1, data._2, data._3, data._4))
-      ) += (date, userId, start, finish)
-  }
+  def createHoliday(date: LocalDate, userId: Int, start: LocalDate, finish: LocalDate): Future[Holiday] =
+    getEventId
+      .map(eventId => Holiday(eventId.id, date, userId, start, finish))
+      .flatMap(holiday => db.run(holidays += holiday).map(_ => holiday))
+
 
   def listHolidays(): Future[Seq[Holiday]] = db.run {
     holidays.result
@@ -155,8 +171,8 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
   def deleteHoliday(userId: Int, start: LocalDate, finish: LocalDate): Future[Int] = db.run {
     holidays
       .filter(_.userId === userId)
-      .filter(_.start >= start)
-      .filter(_.finish <= finish)
+      .filter(_.start === start)
+      .filter(_.finish === finish)
       .delete
   }
 
@@ -166,7 +182,7 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
 
   /*REHEARSAL*/
   private class RehearsalTable(tag: Tag) extends Table[Rehearsal](tag, "rehearsal") {
-    def eventId     = column[Long]("event_id", O.PrimaryKey, O.AutoInc)
+    def eventId     = column[Long]("event_id", O.PrimaryKey)
     def date        = column[LocalDate]("date")
     def location    = column[String]("location")
     def start       = column[LocalTime]("start")
@@ -178,12 +194,11 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
   private val rehearsals = TableQuery[RehearsalTable]
   db.run(DBIO.seq(rehearsals.schema.create))
 
-  def createRehearsal(date: LocalDate, location: String, start: LocalTime, finish: LocalTime): Future[Rehearsal] = db.run {
-    (rehearsals.map(e => (e.date, e.location, e.start, e.finish))
-      returning rehearsals.map(_.eventId)
-      into ((data, id) => Rehearsal(id, data._1, data._2, data._3, data._4))
-      ) += (date, location, start, finish)
-  }
+  def createRehearsal(date: LocalDate, location: String, start: LocalTime, finish: LocalTime): Future[Rehearsal] =
+    getEventId
+      .map(eventId => Rehearsal(eventId.id, date, location, start, finish))
+      .flatMap(rehearsal => db.run(rehearsals += rehearsal).map(_ => rehearsal))
+
 
   def listRehearsals(): Future[Seq[Rehearsal]] = db.run {
     rehearsals.result

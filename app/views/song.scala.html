@@ -14,7 +14,7 @@
 
             <div id="songs" class="songs header-drop">
 
-                <h3>Dallista</h3>
+                <h3>Ready</h3>
 
                 <div class="row tableHead">
                     <div class="artistTablehead tableHeadElement">Artist</div>
@@ -25,8 +25,8 @@
 
                 @for(song <- songs) {
                     <div class="row song">
-                        <div class="artist" ondblclick="editSong('@song.songId','@song.artist','@song.title','@song.key','ready')">@song.artist</div>
-                        <div class="title" ondblclick="editSong('@song.songId','@song.artist','@song.title','@song.key','ready')">
+                        <div class="artist unselectable" ondblclick="editSong('@song.songId','@song.artist','@song.title','@song.key','ready')">@song.artist</div>
+                        <div class="title unselectable" ondblclick="editSong('@song.songId','@song.artist','@song.title','@song.key','ready')">
                             @song.title
                             <div class="close">
                                 <i class="fa fa-window-close" onclick="deleteSong('@song.songId')"></i>
@@ -46,7 +46,7 @@
 
                 <hr/>
 
-                <h3>Tervezett</h3>
+                <h3>Backlog</h3>
 
                 <div class="row tableHead">
                     <div class="artistTablehead tableHeadElement">Artist</div>
@@ -56,8 +56,8 @@
 
                 @for(backlog <- backlogs) {
                     <div class="row song">
-                        <div class="artist" ondblclick="editSong('@backlog.songId','@backlog.artist','@backlog.title','@backlog.key','backlog')">@backlog.artist</div>
-                        <div class="title" ondblclick="editSong('@backlog.songId','@backlog.artist','@backlog.title','@backlog.key','backlog')">
+                        <div class="artist unselectable" ondblclick="editSong('@backlog.songId','@backlog.artist','@backlog.title','@backlog.key','backlog')">@backlog.artist</div>
+                        <div class="title unselectable" ondblclick="editSong('@backlog.songId','@backlog.artist','@backlog.title','@backlog.key','backlog')">
                             @backlog.title
                             <div class="close">
                                 <i class="fa fa-window-close" onclick="deleteSong('@backlog.songId')"></i>

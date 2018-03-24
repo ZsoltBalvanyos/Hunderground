@@ -1,0 +1,178 @@
+@import controllers.security.User
+@import helper.select
+
+@(form: Form[forms.BudgetForm.Data],
+        entries: Seq[BudgetEntryView],
+        events: Seq[(String, String)],
+        users: Seq[(String, String)],
+        balance: Double,
+        individualBalances: Map[String, Double])(implicit messages: Messages, user: Option[User])
+
+@main("Budget"){
+
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/songs.css")"/>
+
+    <div class="container">
+
+        <div class="col-xs-12 col-md-12 fitScreen">
+
+            <div id="songs" class="songs header-drop">
+
+                <button onclick="income()" class="header-drop button" style="padding: 5px; margin: 10px">Income</button>
+                <button onclick="expense()" class="header-drop button" style="padding: 5px; margin: 10px">Expense</button>
+
+
+
+                <div class="row">
+                    <div style="float: left; width: 150px"><h2>Balance</h2></div>
+                    <div><h2>@{f"${balance}%1.2f"}</h2></div>
+                </div>
+
+                @for(personal <- individualBalances) {
+                    <div class="row" style="width: 200px">
+                        <div style="float: left; width: 150px">@{personal._1}</div>
+                        <div style="float: right; text-align: right; width: 50px">@{f"${personal._2}%1.2f"}</div>
+                    </div>
+                }
+
+                <h3>Budget</h3>
+                
+                <div class="row tableHead">
+                    <div class="budgetEntryColumnMedium">Event description</div>
+                    <div class="budgetEntryColumnMedium">Type</div>
+                    <div class="budgetEntryColumnMedium">Date</div>
+                    <div class="budgetEntryColumnLarge">Payment description</div>
+                    <div class="budgetEntryColumnMedium">Payment by</div>
+                    <div class="budgetEntryColumnMedium">Status</div>
+                    <div class="budgetEntryColumnSmall">Amount</div>
+                </div>
+
+                @for(entry <- entries) {
+                    <div class="row song @{entry.direction} unselectable">
+                        <div class="budgetEntryColumnMedium">@{entry.eventDesc}</div>
+                        <div class="budgetEntryColumnMedium">@{entry.eventType}</div>
+                        <div class="budgetEntryColumnMedium">@{entry.eventDate}</div>
+                        <div class="budgetEntryColumnLarge">@{entry.desc}</div>
+                        <div class="budgetEntryColumnMedium">@{entry.who}</div>
+                        <div class="budgetEntryColumnMedium">@{entry.payment}</div>
+                        <div class="budgetEntryColumnSmall">@{entry.amount}</div>
+                    </div>
+                }
+
+                <br/>
+
+                <hr/>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="budget" tabindex="-1" role="dialog" aria-labelledby="Budget Modal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title" name="modal-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <fieldset>
+                        @helper.form(action = routes.HomeController.budget, 'id -> "budgetForm") {
+
+                            <div style="padding: 0px; margin: 0px">
+                                <div style="float: left; padding-right: 20px">
+                                @select(form("event"), events, '_showConstraints -> false, '_label -> "")
+                                </div>
+
+                                @helper.inputDate(form("date"), '_showConstraints -> false, '_label -> "")
+                            </div>
+
+                            <div style="padding: 0px; margin: 0px">
+                                @helper.inputText(form("desc"), '_showConstraints -> false, '_label -> "", 'placeholder -> "Description", 'size -> 50)
+                            </div>
+
+
+                            <div style="float: left">@select(form("who"), users, '_showConstraints -> false, '_label -> "")</div>
+                            <div style="margin-right: 10px; margin-left: 10px">@helper.checkbox(form("done"), '_showConstraints -> false, '_label -> "paid")</div>
+
+                            @helper.inputText(form("amount"), '_showConstraints -> false, '_label -> "", 'placeholder -> "Amount", 'size -> 10, '_error -> "That's ain't no money!")
+
+                            @helper.input(form("direction"), '_showConstraints -> false, '_label -> "") { (id, name, value, args) =>
+                                <input type="hidden" name="direction" id="direction" @toHtmlArgs(args)>
+                            }
+                        }
+                    </fieldset>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <input type="submit" form="budgetForm"/>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="budgetEdit" tabindex="-1" role="dialog" aria-labelledby="BudgetEdit Modal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title-edit" name="modal-title-edit"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <fieldset>
+
+                        @helper.form(action = routes.HomeController.budget, 'id -> "budgetEditForm") {
+
+                            <div style="padding: 0px; margin: 0px">
+                                <div style="float: left; padding-right: 20px">
+                                    @select(form("event"), events, '_showConstraints -> false, '_label -> "", '_id -> "eventEdit")
+                                </div>
+
+                                @helper.inputDate(form("date"), '_showConstraints -> false, '_label -> "")
+                            </div>
+
+                            <div style="padding: 0px; margin: 0px">
+                                @helper.inputText(form("desc"), '_showConstraints -> false, '_label -> "", 'placeholder -> "Description", 'size -> 50, '_id -> "descEdit")
+                            </div>
+
+
+                            <div style="float: left">@select(form("who"), users, '_showConstraints -> false, '_label -> "", '_id -> "whoEdit")</div>
+                            <div style="margin-right: 10px; margin-left: 10px">@helper.checkbox(form("done"), '_showConstraints -> false, '_label -> "paid", '_id -> "paidEdit")</div>
+
+                            @helper.inputText(form("amount"), '_showConstraints -> false, '_label -> "", 'placeholder -> "Amount", 'size -> 10, '_id -> "amountEdit", '_error -> "That's ain't no money!")
+
+                            @helper.input(form("direction"), '_showConstraints -> false, '_label -> "") { (id, name, value, args) =>
+                                <input type="hidden" name="direction" id="direction" @toHtmlArgs(args)>
+                            }
+                        }
+                    </fieldset>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Delete</button>
+                    <input type="submit" form="budgetEditForm"/>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function income() {
+            $('#direction').val("income")
+            $('#modal-title').text("Income")
+            $('#budget').modal('show')
+        }
+        function expense() {
+            $('#direction').val("expense")
+            $('#modal-title').text("Expense")
+            $('#budget').modal('show')
+        }
+    </script>
+}
+

@@ -57,3 +57,26 @@ i {
 .moveUp:hover i, .moveUp i:hover {
     visibility: visible;
 }
+
+.income {
+    background: #ecfcdb;
+}
+
+.expense {
+    background: #ffe2e2;
+}
+
+.budgetEntryColumnSmall {
+    width: 5%;
+    float: left;
+}
+
+.budgetEntryColumnMedium {
+    width: 15%;
+    float: left;
+}
+
+.budgetEntryColumnLarge {
+    width: 20%;
+    float: left;
+}

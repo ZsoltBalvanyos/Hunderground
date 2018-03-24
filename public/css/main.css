@@ -53,8 +53,33 @@ input[type="submit"] {
     background-color: lightskyblue;
 }
 .rehearsalLabel {
-    background-color: yellowgreen;
+    background-color: greenyellow;
 }
 .memoLabel {
     background-color: sandybrown;
+}
+
+dd {
+    display: block;
+    margin: 0px;
+    padding: 0px;
+}
+dt {
+    display: block;
+    margin: 0px;
+    padding: 0px;
+}
+
+dl label {
+    display: block;
+    float: left;
+    margin: 0px 10px;
+}
+
+.unselectable {
+    user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
 }
