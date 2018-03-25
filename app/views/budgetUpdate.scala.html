@@ -1,0 +1,77 @@
+@import controllers.security.User
+@import helper.select
+
+@(form: Form[forms.BudgetForm.Data],
+        entry: BudgetEntryView,
+        events: IndexedSeq[(String, String)],
+        users: IndexedSeq[(String, String)])(implicit messages: Messages, user: Option[User])
+
+@main("Budget"){
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/login.css")"/>
+
+
+    <div class="container">
+
+        <div class="col-md-3"></div>
+
+        <div class="col-xs-12 col-md-6 header-drop">
+
+
+            <fieldset style="margin-top: 30%">
+            @helper.form(action = routes.BudgetController.budget, 'id -> "budgetFormUpdate") {
+
+                <div style="padding: 0px; margin: 0px">
+                    <div style="float: left; padding-right: 20px">
+                    @select(form("event"), events, '_showConstraints -> false, '_label -> "")
+                    </div>
+
+                    @helper.inputDate(form("date"), '_showConstraints -> false, '_label -> "")
+                </div>
+
+                <div style="padding: 0px; margin: 0px">
+                @helper.inputText(form("desc"), '_showConstraints -> false, '_label -> "", 'placeholder -> "Description", 'size -> 50)
+                </div>
+
+
+                <div style="float: left">@select(form("who"), users, '_showConstraints -> false, '_label -> "")</div>
+                <div style="margin-right: 10px; margin-left: 10px">@helper.checkbox(form("done"), '_showConstraints -> false, '_label -> "paid")</div>
+
+                @helper.inputText(form("amount"), '_showConstraints -> false, '_label -> "", 'placeholder -> "Amount", 'size -> 10, '_error -> "That's ain't no money!")
+
+                @helper.input(form("direction"), '_showConstraints -> false, '_label -> "") { (id, name, value, args) =>
+                    <input type="hidden" name="direction" id="direction" value="@{entry.direction}" @toHtmlArgs(args)>
+                }
+                @helper.input(form("entryId"), '_showConstraints -> false, '_label -> "") { (id, name, value, args) =>
+                    <input type="hidden" name="entryId" id="entryId" value="@{entry.budgetEntryId}" @toHtmlArgs(args)>
+                }
+            }
+            </fieldset>
+
+            <button type="button" class="btn btn-secondary" onclick="goBack()">Cancel</button>
+            <button type="button" class="btn btn-secondary" onclick="deleteEntry('@{entry.budgetEntryId}')">Delete</button>
+            <input type="submit" form="budgetFormUpdate"/>
+        </div>
+
+        <div class="col-md-3"></div>
+
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+        function deleteEntry(id) {
+            var req = new XMLHttpRequest();
+            req.open("DELETE", "delete/" + id);
+
+            req.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    window.location.href = "/";
+                }
+            };
+
+            req.send();
+        }
+    </script>
+
+}

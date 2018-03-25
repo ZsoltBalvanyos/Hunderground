@@ -4,7 +4,7 @@ import sbtassembly.AssemblyPlugin.autoImport.assemblyMergeStrategy
 
 name := "Hunderground"
  
-version := "1.0" 
+version := "1.0.12"
       
 enablePlugins(PlayScala)
 
@@ -19,7 +19,8 @@ libraryDependencies ++= Seq(
   ehcache,
   guice,
   h2,
-  mysql,
+  postgresql,
+  pgSlick,
   typeSafeConfig,
   Cats.core,
   PlaySlick.slick,

@@ -92,7 +92,7 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
   }
 
   def futureGigs(year: Int, month: Int): Future[Seq[Gig]] = db.run {
-    gigs.filter(_.date > LocalDate.of(year, month, 1)).result
+    gigs.filter(_.date >= LocalDate.of(year, month, 1)).result
   }
 
   def deleteGig(eventId: String): Future[Int] = db.run {
@@ -125,7 +125,7 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
   }
 
   def futureMemos(year: Int, month: Int): Future[Seq[Memo]] = db.run {
-    memos.filter(_.date > LocalDate.of(year, month, 1)).result
+    memos.filter(_.date >= LocalDate.of(year, month, 1)).result
   }
 
   def deleteMemo(eventId: String): Future[Int] = db.run {
@@ -161,7 +161,7 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
   }
 
   def futureHolidays(year: Int, month: Int): Future[Seq[Holiday]] = db.run {
-    holidays.filter(_.date > LocalDate.of(year, month, 1)).result
+    holidays.filter(_.date >= LocalDate.of(year, month, 1)).result
   }
 
   def deleteHoliday(eventId: String): Future[Int] = db.run {
@@ -205,7 +205,7 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
   }
 
   def futureRehearsals(year: Int, month: Int): Future[Seq[Rehearsal]] = db.run {
-    rehearsals.filter(_.date > LocalDate.of(year, month, 1)).result
+    rehearsals.filter(_.date >= LocalDate.of(year, month, 1)).result
   }
 
   def deleteRehearsal(eventId: String): Future[Int] = db.run {

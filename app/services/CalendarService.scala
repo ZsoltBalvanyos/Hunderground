@@ -1,10 +1,12 @@
 package services
 
+import java.io
 import java.time.format.{DateTimeFormatter, TextStyle}
 import java.time.{DayOfWeek, LocalDate, Month => MonthOfYear}
 import java.util.{GregorianCalendar, Locale}
 
 import com.google.inject.Inject
+import controllers.security.User
 import models._
 import repositories.{EventRepository, UserRepository}
 import util.{AppError, InvalidDateOrderError}
@@ -58,8 +60,13 @@ class CalendarService @Inject() (eventRepository: EventRepository,
         case gig @ Gig(_, _, location)        => CalendarEntry(location, "gigLabel", gig)
         case memo @ Memo(_, _, text)          => CalendarEntry(text, "memoLabel", memo)
         case holiday @ Holiday(_, _, userId, _, _)  =>
-          val user = Await.result(userRepository.getUser(userId), 10 seconds).flatMap(_.firstName).getOrElse("anonymus")
-          CalendarEntry(user, "holidayLabel", holiday)
+          val user = Await.result[Option[User]](userRepository.getUser(userId), 10 seconds)
+          val name = for{
+            user  <- user
+            first <- user.firstName
+            last  <- user.lastName
+          } yield s"$first $last"
+          CalendarEntry(name.getOrElse("anonymus"), "holidayLabel", holiday)
         case rehearsal @ Rehearsal(_, _, location, start, finish) =>
           CalendarEntry(s"$location ${start.format(rehearsalFormat)}-${finish.format(rehearsalFormat)}", "rehearsalLabel", rehearsal)
       }

@@ -42,7 +42,8 @@
                             <li><a class="btn btn-light btn-nav" href="/budget">Budget</a></li>
                             <li><a class="btn btn-light btn-nav" href="/songList">Song List</a></li>
                             <li><a class="btn btn-light btn-nav" href="/getCalendar">Calendar</a></li>
-                            <li><a class="btn btn-light btn-nav" href="/signOut"><span class="glyphicon glyphicon-log-out"></span>Sign Out @{user.map(_.firstName).getOrElse("")}</a></li>
+                            <li><a class="btn btn-light btn-nav" href="/signOut"><span class="glyphicon glyphicon-log-out"></span>Sign Out</a></li>
+                            <li><a class="btn btn-light btn-nav" href="/changePassword">@{user.map(_.firstName).getOrElse("")}</a></li>
                         } else {
                             <li><a class="btn btn-light btn-nav" href="/signIn"><span class="glyphicon glyphicon-log-out"></span>Sign In</a></li>
                         }

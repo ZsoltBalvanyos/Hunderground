@@ -70,5 +70,9 @@ class BudgetRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impl
 
   def list(): Future[Seq[BudgetEntry]] = db.run(budgetEntries.result)
 
-  def delete(budgetEntryId: String) = db.run(budgetEntries.filter(_.budgetEntryId === budgetEntryId.toLong).delete)
+  def delete(budgetEntryId: Long) = db.run(budgetEntries.filter(_.budgetEntryId === budgetEntryId).delete)
+
+  def update(entry: BudgetEntry) = db.run(budgetEntries.filter(_.budgetEntryId === entry.budgetEntryId).update(entry))
+
+  def getEntry(entryId: Long): Future[Option[BudgetEntry]] = db.run(budgetEntries.filter(_.budgetEntryId === entryId).result.headOption)
 }

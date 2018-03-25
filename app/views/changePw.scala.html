@@ -1,8 +1,8 @@
 @import controllers.security.User
-@(signInForm: Form[forms.SignInForm.Data])(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
-@main("Sign In") {
+@(changePwForm: Form[forms.ChangePasswordForm.Data])(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
+@main("Change password") {
     <link rel="stylesheet" href="@routes.Assets.versioned("css/login.css")"/>
 
 
@@ -15,14 +15,13 @@
 
             <fieldset style="margin-top: 30%">
 
-                @helper.form(action = routes.AuthController.signIn()) {
-                    @helper.inputText(signInForm("email"), '_showConstraints -> false, '_label -> "", 'placeholder -> "Email address", 'class -> "form-control input-lg")
-                    @helper.inputPassword(signInForm("password"), '_showConstraints -> false, '_label -> "", 'placeholder -> "Password", 'class -> "form-control input-lg")
-                    @helper.checkbox(signInForm("rememberMe"), '_showConstraints -> false, '_label -> "", '_text -> "Remember Me", 'checked -> true)
-
+                @helper.form(action = routes.AuthController.changePassword()) {
+                    @helper.inputPassword(changePwForm("oldpassword"), '_showConstraints -> false, '_label -> "", 'placeholder -> "Old password", 'class -> "form-control input-lg")
+                    @helper.inputPassword(changePwForm("newpassword"), '_showConstraints -> false, '_label -> "", 'placeholder -> "New password", 'class -> "form-control input-lg")
+                    @helper.inputPassword(changePwForm("confirmation"), '_showConstraints -> false, '_label -> "", 'placeholder -> "Confirm password", 'class -> "form-control input-lg")
                     <div class="form-group">
                         <div>
-                            <input id="submit" type="submit" value="Sign In" class="btn btn-lg btn-block"/>
+                            <input id="submit" type="submit" value="Submit" class="btn btn-lg btn-block"/>
                         </div>
                     </div>
                 }
@@ -45,5 +44,4 @@
         <div class="col-md-3"></div>
 
     </div>
-
 }

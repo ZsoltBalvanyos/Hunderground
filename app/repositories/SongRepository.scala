@@ -38,7 +38,11 @@ class SongRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(implic
   def create(artist: String, title: String, status: SongStatus, key: String) = db.run {
     (songs.map(s => (s.artist, s.title, s.status, s.key))
       returning songs.map(_.songId)
-      into ((data, id) => Song(id, data._1, data._2, data._3, data._4))
+      into ((data, id) => {
+      val song = Song(id, data._1, data._2, data._3, data._4)
+
+      song
+    })
       ) += (artist, title, status, key)
   }
 

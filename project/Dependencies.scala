@@ -5,6 +5,8 @@ object Dependencies {
   lazy val slick           = "com.typesafe.slick"   % "slick_2.11"            % "3.0.0"
   lazy val h2              = "com.h2database"       % "h2"                    % "1.4.196"
   lazy val mysql           = "mysql"                % "mysql-connector-java"  % "5.1.16"
+  lazy val postgresql      = "org.postgresql"       % "postgresql"            % "9.3-1102-jdbc41"
+  lazy val pgSlick         = "com.github.tminglei" 	%% "slick-pg" 			      % "0.16.0"
   lazy val typeSafeConfig  = "com.typesafe"         % "config"                % "1.3.1"
   lazy val abstractj       = "org.abstractj.kalium" % "kalium"                % "0.7.0"
   lazy val scalaTest       = "org.scalatest"       %% "scalatest"             % "3.0.3"   % Test

@@ -93,6 +93,10 @@ function openModalForUpdate(songId, target) {
     $('#newSong').modal('show');
 }
 
+function addNewEvent(buttonId) {
+    $("#" + buttonId).click();
+}
+
 function addRehearsal(date) {
     focus = date
     $('#newRehearsal').modal('show')

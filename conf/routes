@@ -4,11 +4,13 @@ GET     /index                      controllers.HomeController.index
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 GET     /assets/*file               controllers.Assets.at(file)
 
-GET     /signIn                      controllers.AuthController.signInForm
-GET     /signUp                      controllers.AuthController.signUpForm
-GET     /signOut                     controllers.AuthController.signOut
-POST    /signIn                      controllers.AuthController.signIn
-POST    /signUp                      controllers.AuthController.signUp
+GET     /signIn                     controllers.AuthController.signInForm
+GET     /signUp                     controllers.AuthController.signUpForm
+GET     /signOut                    controllers.AuthController.signOut
+POST    /signIn                     controllers.AuthController.signIn
+POST    /signUp                     controllers.AuthController.signUp
+GET     /changePassword             controllers.AuthController.changePasswordForm
+POST    /changePassword             controllers.AuthController.changePassword
 
 GET     /getCalendar                        controllers.CalendarController.getCalendar
 GET     /events                             controllers.EventController.getEvents
@@ -32,8 +34,7 @@ DELETE  /event/gig/:eventId                                  controllers.EventCo
 DELETE  /event/memo/:eventId                                 controllers.EventController.deleteMemo(eventId)
 DELETE  /event/holiday/:userId/:start/:finish                controllers.EventController.deleteHoliday(userId, start, finish)
 
-#GET     /sample                         controllers.HomeController.sampleForm
-#POST    /sample                         controllers.HomeController.sample
-
-GET     /budget                         controllers.HomeController.budgetForm
-POST    /budget                         controllers.HomeController.budget
+GET     /budget                         controllers.BudgetController.budgetPage
+POST    /budget                         controllers.BudgetController.budget
+GET     /budget/:entryId                controllers.BudgetController.budgetUpdate(entryId)
+DELETE  /budget/delete/:entryId         controllers.BudgetController.delete(entryId)

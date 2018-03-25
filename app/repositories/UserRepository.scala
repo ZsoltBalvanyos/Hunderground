@@ -45,4 +45,8 @@ class UserRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implici
   def getUsers: Future[Seq[User]] = db.run(users.result)
 
   def findByEmailAddress(email: String): Future[Option[User]] = db.run(users.filter(_.emailAddress === email).result.headOption)
+
+  def updateUser(user: User) = db.run {
+    users.filter(_.userId === user.userID).update(user)
+  }
 }

@@ -3,8 +3,8 @@
 
 @(form: Form[forms.BudgetForm.Data],
         entries: Seq[BudgetEntryView],
-        events: Seq[(String, String)],
-        users: Seq[(String, String)],
+        events: IndexedSeq[(String, String)],
+        users: IndexedSeq[(String, String)],
         balance: Double,
         individualBalances: Map[String, Double])(implicit messages: Messages, user: Option[User])
 
@@ -48,7 +48,7 @@
                 </div>
 
                 @for(entry <- entries) {
-                    <div class="row song @{entry.direction} unselectable">
+                    <div class="row song @{entry.direction} unselectable" ondblclick="update('@{entry.budgetEntryId}')">
                         <div class="budgetEntryColumnMedium">@{entry.eventDesc}</div>
                         <div class="budgetEntryColumnMedium">@{entry.eventType}</div>
                         <div class="budgetEntryColumnMedium">@{entry.eventDate}</div>
@@ -77,7 +77,7 @@
 
                 <div class="modal-body">
                     <fieldset>
-                        @helper.form(action = routes.HomeController.budget, 'id -> "budgetForm") {
+                        @helper.form(action = routes.BudgetController.budget, 'id -> "budgetForm") {
 
                             <div style="padding: 0px; margin: 0px">
                                 <div style="float: left; padding-right: 20px">
@@ -125,14 +125,14 @@
                 <div class="modal-body">
                     <fieldset>
 
-                        @helper.form(action = routes.HomeController.budget, 'id -> "budgetEditForm") {
+                        @helper.form(action = routes.BudgetController.budget, 'id -> "budgetEditForm") {
 
                             <div style="padding: 0px; margin: 0px">
                                 <div style="float: left; padding-right: 20px">
                                     @select(form("event"), events, '_showConstraints -> false, '_label -> "", '_id -> "eventEdit")
                                 </div>
 
-                                @helper.inputDate(form("date"), '_showConstraints -> false, '_label -> "")
+                                @helper.inputDate(form("date"), '_showConstraints -> false, '_label -> "", '_id -> "dateEdit")
                             </div>
 
                             <div style="padding: 0px; margin: 0px">
@@ -146,7 +146,7 @@
                             @helper.inputText(form("amount"), '_showConstraints -> false, '_label -> "", 'placeholder -> "Amount", 'size -> 10, '_id -> "amountEdit", '_error -> "That's ain't no money!")
 
                             @helper.input(form("direction"), '_showConstraints -> false, '_label -> "") { (id, name, value, args) =>
-                                <input type="hidden" name="direction" id="direction" @toHtmlArgs(args)>
+                                <input type="hidden" name="direction" id="directionEdit" @toHtmlArgs(args)>
                             }
                         }
                     </fieldset>
@@ -172,6 +172,10 @@
             $('#direction').val("expense")
             $('#modal-title').text("Expense")
             $('#budget').modal('show')
+        }
+
+        function update(id) {
+            window.location.href = "/budget/" + id;
         }
     </script>
 }
