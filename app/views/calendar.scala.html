@@ -3,16 +3,24 @@
 @import controllers.security.User
 @import views.ViewHelper
 
-@(months: List[Month], users: List[User])(implicit user: Option[User])
+@(months: List[Month], users: List[User], firstDate: String)(implicit user: Option[User])
 
 @main("Calendar") {
+
+    <script>
+        function reFresh() {
+            window.location.href = "/calendar/" + $("#startDate").val();
+        }
+    </script>
 
     <link rel="stylesheet" href="@routes.Assets.versioned("css/calendar.css")"/>
 
     <div class="container">
 
         <div id="calendar" class="header-drop">
-
+            <div class="col-xs-12 col-md-3" style="text-align: center; width: 100%">
+                <input type="date" value="@firstDate" id="startDate" oninput="reFresh()">
+            </div>
             @for(month <- months) {
                 <div class="col-xs-12 col-md-3 month">
 

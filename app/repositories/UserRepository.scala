@@ -22,7 +22,7 @@ class UserRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implici
     def userId = column[Int]("user_id", O.PrimaryKey, O.AutoInc)
     def firstName = column[Option[String]]("first_name")
     def lastName = column[Option[String]]("last_name")
-    def emailAddress = column[String]("email_address", O.Unique)
+    def emailAddress = column[String]("email_address")
     def password = column[String]("password")
     def salt = column[String]("salt")
     def photo = column[Option[String]]("photo")
@@ -40,11 +40,11 @@ class UserRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implici
       ) += (firstName, lastName, emailAddress, password, salt, photo)
   }
 
-  def getUser(userId: Int): Future[Option[User]] = db.run(users.filter(_.userId === userId).result.headOption)
+  def getUser(userId: Int): Future[Option[User]] = db.run(users.filter(_.userId === userId).result).map(_.headOption)
 
   def getUsers: Future[Seq[User]] = db.run(users.result)
 
-  def findByEmailAddress(email: String): Future[Option[User]] = db.run(users.filter(_.emailAddress === email).result.headOption)
+  def findByEmailAddress(email: String): Future[Option[User]] = db.run(users.filter(_.emailAddress === email).result).map(_.headOption)
 
   def updateUser(user: User) = db.run {
     users.filter(_.userId === user.userID).update(user)

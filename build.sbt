@@ -4,7 +4,7 @@ import sbtassembly.AssemblyPlugin.autoImport.assemblyMergeStrategy
 
 name := "Hunderground"
  
-version := "1.0.14"
+version := "1.0.16"
       
 enablePlugins(PlayScala)
 

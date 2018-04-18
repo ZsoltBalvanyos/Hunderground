@@ -19,7 +19,7 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
   import dbConfig._
   import profile.api._
 
-  val eventId = new AtomicLong(0)
+//  val eventId = new AtomicLong(0)
 
   case class EventId(id: Long)
 
@@ -31,12 +31,7 @@ class EventRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
   private val eventIds = TableQuery[EventIdTable]
   db.run(DBIO.seq(eventIds.schema.create))
 
-  def getEventId: Future[EventId] = db.run {
-    (eventIds.map(e => ())
-      returning eventIds.map(_.eventId)
-      into ((data, id) => EventId(id))
-      ) += ()
-  }
+  def getEventId: Future[EventId] = db.run((eventIds returning eventIds.map(_.eventId)) += EventId(0)).map(EventId)
 
 
   val idFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")

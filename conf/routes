@@ -12,12 +12,14 @@ POST    /signUp                     controllers.AuthController.signUp
 GET     /changePassword             controllers.AuthController.changePasswordForm
 POST    /changePassword             controllers.AuthController.changePassword
 
-GET     /getCalendar                        controllers.CalendarController.getCalendar
-GET     /events                             controllers.EventController.getEvents
+GET     /calendar                        controllers.CalendarController.calendar()
+GET     /calendar/:date                  controllers.CalendarController.calendarFromDate(date)
 
 GET     /songList                           controllers.SongController.getSongs()
 POST    /song/:artist/:title/:key/:status   controllers.SongController.addSong(artist, title, key, status)
 DELETE  /song/:songId                       controllers.SongController.deleteSong(songId)
+
+GET     /events                                              controllers.EventController.getEvents
 
 POST    /event/rehearsal/:date/:location/:start/:duration    controllers.EventController.addRehearsal(date, location, start, duration)
 POST    /event/gig/:date/:location                           controllers.EventController.addGig(date, location)
@@ -37,4 +39,5 @@ DELETE  /event/holiday/:userId/:start/:finish                controllers.EventCo
 GET     /budget                         controllers.BudgetController.budgetPage
 POST    /budget                         controllers.BudgetController.budget
 GET     /budget/:entryId                controllers.BudgetController.budgetUpdate(entryId)
+POST    /budget/update                  controllers.BudgetController.update
 DELETE  /budget/delete/:entryId         controllers.BudgetController.delete(entryId)

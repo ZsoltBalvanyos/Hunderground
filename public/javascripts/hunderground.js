@@ -8,7 +8,7 @@ function sendMemo(id) {
     var memo = document.getElementById(id).value;
     if(memo != focus) {
         var req = new XMLHttpRequest();
-        req.open("PUT", "calendar/?id=" + id + "&memo=" + memo) ;
+        req.open("PUT", "/calendar/?id=" + id + "&memo=" + memo) ;
         req.send();
     }
 }
@@ -24,7 +24,7 @@ function editSong(songId, artist, title, key, target) {
 
 function updateSong(songId, target) {
     var req = new XMLHttpRequest();
-    req.open("POST", "song/" + $("#artist").val() + "/" + $("#title").val() + "/" + $("#key").val() + "/" + target);
+    req.open("POST", "/song/" + $("#artist").val() + "/" + $("#title").val() + "/" + $("#key").val() + "/" + target);
 
     req.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -37,7 +37,7 @@ function updateSong(songId, target) {
 
 function addSong(target) {
     var req = new XMLHttpRequest();
-    req.open("POST", "song/" + $("#artist").val() + "/" + $("#title").val() + "/" + $("#key").val() + "/" + target);
+    req.open("POST", "/song/" + $("#artist").val() + "/" + $("#title").val() + "/" + $("#key").val() + "/" + target);
 
     req.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -50,7 +50,7 @@ function addSong(target) {
 
 function deleteSong(songId) {
     var req = new XMLHttpRequest();
-    req.open("DELETE", "song/" + songId);
+    req.open("DELETE", "/song/" + songId);
 
     req.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -64,8 +64,8 @@ function deleteSong(songId) {
 function moveUp(songId, artist, title, key) {
     var reqDelete = new XMLHttpRequest();
     var reqPost = new XMLHttpRequest();
-    reqDelete.open("DELETE", "song/" + songId);
-    reqPost.open("POST", "song/" + artist + "/" + title + "/" + key + "/ready");
+    reqDelete.open("DELETE", "/song/" + songId);
+    reqPost.open("POST", "/song/" + artist + "/" + title + "/" + key + "/ready");
 
     reqDelete.send();
     reqPost.send();
@@ -122,13 +122,13 @@ function saveEvent(type) {
     var req = new XMLHttpRequest();
 
     if(type === 'gig') {
-        req.open("POST", "event/gig/" + focus + "/" + $("#gigLocation").val());
+        req.open("POST", "/event/gig/" + focus + "/" + $("#gigLocation").val());
     } else if(type === 'rehearsal') {
-        req.open("POST", "event/rehearsal/" + focus + "/" + $("#rehearsalLocation").val()+ "/" + $("#rehearsalStart").val()+ "/" + $("#rehearsalDuration").val());
+        req.open("POST", "/event/rehearsal/" + focus + "/" + $("#rehearsalLocation").val()+ "/" + $("#rehearsalStart").val()+ "/" + $("#rehearsalDuration").val());
     } else if(type === 'memo') {
-        req.open("POST", "event/memo/" + focus + "/" + $("#memo").val());
+        req.open("POST", "/event/memo/" + focus + "/" + $("#memo").val());
     } else if(type === 'holiday') {
-        req.open("POST", "event/holiday/" + focus + "/" + $("#person").val()+ "/" + $("#holidayTill").val());
+        req.open("POST", "/event/holiday/" + focus + "/" + $("#person").val()+ "/" + $("#holidayTill").val());
     }
 
     req.onreadystatechange = function() {
@@ -147,7 +147,7 @@ function editRehearsal(eventId, date, loc) {
 
     $("#deleteRehearsal").click( function() {
         var req = new XMLHttpRequest();
-        req.open("DELETE", "event/rehearsal/" + eventId);
+        req.open("DELETE", "/event/rehearsal/" + eventId);
         $('#editRehearsal').modal('hide')
 
         req.onreadystatechange = function() {
@@ -160,7 +160,7 @@ function editRehearsal(eventId, date, loc) {
 
     $("#submitRehearsal").click( function() {
         var req = new XMLHttpRequest();
-        req.open("PUT", "event/rehearsal/" + focus + "/" + $("#rehearsalLocationEdit").val() + "/" + eventId);
+        req.open("PUT", "/event/rehearsal/" + focus + "/" + $("#rehearsalLocationEdit").val() + "/" + eventId);
         $('#editRehearsal').modal('hide')
 
         req.onreadystatechange = function() {
@@ -181,7 +181,7 @@ function editGig(eventId, date, loc) {
 
     $("#deleteGig").click(function(){
         var req = new XMLHttpRequest();
-        req.open("DELETE", "event/gig/" + eventId);
+        req.open("DELETE", "/event/gig/" + eventId);
         $('#editGig').modal('hide')
 
         req.onreadystatechange = function() {
@@ -194,7 +194,7 @@ function editGig(eventId, date, loc) {
 
     $("#submitGig").click( function() {
         var req = new XMLHttpRequest();
-        req.open("PUT", "event/gig/" + focus + "/" + $("#gigLocationEdit").val() + "/" + eventId);
+        req.open("PUT", "/event/gig/" + focus + "/" + $("#gigLocationEdit").val() + "/" + eventId);
         $('#editGig').modal('hide')
 
         req.onreadystatechange = function() {
@@ -215,7 +215,7 @@ function editMemo(eventId, date, memo) {
 
     $("#deleteMemo").click(function(){
         var req = new XMLHttpRequest();
-        req.open("DELETE", "event/memo/" + eventId);
+        req.open("DELETE", "/event/memo/" + eventId);
         $('#editMemo').modal('hide')
 
         req.onreadystatechange = function() {
@@ -228,7 +228,7 @@ function editMemo(eventId, date, memo) {
 
     $("#submitMemo").click( function() {
         var req = new XMLHttpRequest();
-        req.open("PUT", "event/memo/" + focus + "/" + $("#memoEdit").val() + "/" + eventId);
+        req.open("PUT", "/event/memo/" + focus + "/" + $("#memoEdit").val() + "/" + eventId);
         $('#editMemo').modal('hide')
 
         req.onreadystatechange = function() {
@@ -251,7 +251,7 @@ function editHoliday(eventId, date, userId, start, finish) {
 
     $("#deleteHoliday").click(function(){
         var req = new XMLHttpRequest();
-        req.open("DELETE", "event/holiday/" + userId + "/" + start + "/" + finish);
+        req.open("DELETE", "/event/holiday/" + userId + "/" + start + "/" + finish);
         $('#editHoliday').modal('hide')
 
         req.onreadystatechange = function() {
@@ -264,7 +264,7 @@ function editHoliday(eventId, date, userId, start, finish) {
 
     $("#submitHoliday").click( function() {
         var req = new XMLHttpRequest();
-        req.open("PUT", "event/holiday/" + $("#personEdit").val() + "/" + start + "/" + finish + "/" + $("#holidayStartEdit").val()  + "/" + $("#holidayTillEdit").val());
+        req.open("PUT", "/event/holiday/" + $("#personEdit").val() + "/" + start + "/" + finish + "/" + $("#holidayStartEdit").val()  + "/" + $("#holidayTillEdit").val());
         $('#editHoliday').modal('hide')
 
         req.onreadystatechange = function() {

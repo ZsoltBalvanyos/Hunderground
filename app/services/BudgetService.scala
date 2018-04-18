@@ -12,13 +12,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import cats.implicits._
 
+import scala.collection.immutable
+
 class BudgetService @Inject() (val budgetRepository: BudgetRepository,
                                val userRepository: UserRepository,
                                val eventRepository: EventRepository) {
 
   val dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
-  def eventMappings(events: Seq[Event], eventId: Long) = {
+  def eventMappings(events: Seq[Event], entry: Option[BudgetEntry]): IndexedSeq[(String, String)] = {
 
     val mapped = events.flatMap(event => event match {
       case Gig(eventId, date, location) => Some((eventId.toString, s"${event.date.format(dtf)} $location"))
@@ -27,7 +29,12 @@ class BudgetService @Inject() (val budgetRepository: BudgetRepository,
       case Holiday(_, _, _, _, _) => None
     })
 
-    mapped.find(_._1.toLong == eventId).toIndexedSeq ++ mapped.filter(_._1.toLong != eventId).toIndexedSeq
+    val eventId = if(entry.isDefined) entry.get.event else events.headOption.getOrElse()
+
+    entry match {
+      case Some(e) => mapped.find(_._1.toLong == e.event).toIndexedSeq ++ mapped.filter(_._1.toLong != e.event).toIndexedSeq
+      case None => mapped.toIndexedSeq
+    }
   }
 
   def userMappings(users: Seq[User], userId: Int) = {

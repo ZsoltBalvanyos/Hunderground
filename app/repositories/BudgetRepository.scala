@@ -74,5 +74,5 @@ class BudgetRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impl
 
   def update(entry: BudgetEntry) = db.run(budgetEntries.filter(_.budgetEntryId === entry.budgetEntryId).update(entry))
 
-  def getEntry(entryId: Long): Future[Option[BudgetEntry]] = db.run(budgetEntries.filter(_.budgetEntryId === entryId).result.headOption)
+  def getEntry(entryId: Long): Future[Option[BudgetEntry]] = db.run(budgetEntries.filter(_.budgetEntryId === entryId).result).map(_.headOption)
 }

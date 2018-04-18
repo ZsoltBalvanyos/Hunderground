@@ -7,12 +7,11 @@ import controllers.security.{SecuredAction, SecuredController, User}
 import forms.{BudgetForm, BudgetUpdateForm}
 import models._
 import play.api.cache.SyncCacheApi
-import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, ControllerComponents, Request}
 import services.BudgetService
 
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, Future}
 
 class BudgetController @Inject()(cc: ControllerComponents,
                                  SecuredAction: SecuredAction,
@@ -27,7 +26,7 @@ class BudgetController @Inject()(cc: ControllerComponents,
 
     for {
       users: Seq[User] <- budgetService.userRepository.getUsers
-      events: Seq[Event] <- budgetService.eventRepository.futureEvents(now.getYear, now.getMonthValue)
+      events: Seq[Event] <- budgetService.eventRepository.list
       entries: Seq[BudgetEntry] <- budgetService.budgetRepository.list
       entryViews: Seq[BudgetEntryView] <- Future(budgetService.getEntryViews(entries, events, users))
       individualBalances: Map[String, Double] <- budgetService.getIndividualBalance(users, entries)
@@ -35,7 +34,7 @@ class BudgetController @Inject()(cc: ControllerComponents,
       Ok(views.html.budget(
         forms.BudgetForm.form(user.get),
         entryViews,
-        budgetService.eventMappings(events, events.head.eventId),
+        budgetService.eventMappings(events, None),
         budgetService.userMappings(users, user.get.userID),
         budgetService.getBalance(entries),
         individualBalances)
@@ -65,13 +64,13 @@ class BudgetController @Inject()(cc: ControllerComponents,
     for {
       entry: Option[BudgetEntry] <- budgetService.getEntry(entryId.toLong)
       users: Seq[User] <- budgetService.userRepository.getUsers
-      events: Seq[Event] <- budgetService.eventRepository.futureEvents(now.getYear, now.getMonthValue)
+      events: Seq[Event] <- budgetService.eventRepository.list
       entryViews: Seq[BudgetEntryView] <- Future(budgetService.getEntryViews(Seq(entry.get), events, users))
     } yield
       Ok(views.html.budgetUpdate(
         getForm(entry),
         entryViews.head,
-        budgetService.eventMappings(events, entry.get.event),
+        budgetService.eventMappings(events, entry),
         budgetService.userMappings(users, entry.get.who))
       )
   }
@@ -87,31 +86,32 @@ class BudgetController @Inject()(cc: ControllerComponents,
 
     BudgetUpdateForm.form.bindFromRequest.fold(
       _ => Future(BadRequest),
-      entry =>
-        BudgetEntryDirection.fromString(entry.direction).toOption flatMap { direction =>
+      entry => {
+        BudgetEntryDirection.fromString(entry.direction).toOption flatMap { direction: BudgetEntryDirection =>
           user.map(u => {
             val sign = if (direction == Income) 1 else -1
 
-            BudgetEntry(
-              entry.entryId,
-              entry.event,
-              entry.date,
-              entry.desc,
-              entry.who,
-              entry.done,
-              entry.amount.toDouble * sign,
-              direction,
-              u.userID
-            )
+              BudgetEntry(
+                entry.entryId,
+                entry.event,
+                entry.date,
+                entry.desc,
+                entry.who,
+                entry.done,
+                Math.abs(entry.amount.toDouble) * sign,
+                direction,
+                u.userID
+              )
+          })
+        } match {
+          case Some(budgetEntry) => {
+            budgetService.updateEntry(budgetEntry)
+            Future(Redirect(routes.BudgetController.budgetPage()))
           }
-        )
-      } match {
-          case Some( b: Future[BudgetEntry]) => b.map(_ => Redirect(routes.BudgetController.budgetPage()))
           case None => Future(Unauthorized)
         }
+      }
     )
-    budgetService.updateEntry(???)
-    ???
   }
 
   def budget = SecuredAction.async { implicit request =>

@@ -24,7 +24,7 @@ class SongRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(implic
   )
 
   private class SongTable(tag: Tag) extends Table[Song](tag, "song") {
-    def songId = column[String]("song_id", O.PrimaryKey, O.AutoInc)
+    def songId = column[Long]("song_id", O.PrimaryKey, O.AutoInc)
     def artist = column[String]("artist")
     def title  = column[String]("title")
     def status = column[SongStatus]("status")
@@ -38,15 +38,11 @@ class SongRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(implic
   def create(artist: String, title: String, status: SongStatus, key: String) = db.run {
     (songs.map(s => (s.artist, s.title, s.status, s.key))
       returning songs.map(_.songId)
-      into ((data, id) => {
-      val song = Song(id, data._1, data._2, data._3, data._4)
-
-      song
-    })
+      into ((data, id) => Song(id, data._1, data._2, data._3, data._4))
       ) += (artist, title, status, key)
   }
 
   def list(): Future[Seq[Song]] = db.run(songs.result)
 
-  def delete(songId: String) = db.run(songs.filter(_.songId === songId).delete)
+  def delete(songId: Long) = db.run(songs.filter(_.songId === songId).delete)
 }

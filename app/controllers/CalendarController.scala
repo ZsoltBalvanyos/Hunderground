@@ -1,5 +1,7 @@
 package controllers
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -17,13 +19,20 @@ class CalendarController @Inject()(val cc: ControllerComponents,
                                    cache: SyncCacheApi)
   extends SecuredController(cc, cache) {
 
-  def getCalendar = SecuredAction.async(parse.defaultBodyParser) { implicit request =>
+  val dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
+  def calendar = SecuredAction.async(parse.defaultBodyParser) { implicit request =>
+    implicit val user = request.user
+    Future(Redirect(routes.CalendarController.calendarFromDate(LocalDate.now.format(dtf))))
+  }
+
+  def calendarFromDate(selectedDate: String) = SecuredAction.async {implicit request =>
     implicit val user = request.user
 
-    val cal = Calendar.getInstance()
-    val months = calendarService.getCalendar(12, 42, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1)
-
-    calendarService.getMembers.map(members => Ok(views.html.calendar(months, members.toList)))
+    val date = LocalDate.parse(selectedDate, dtf)
+    val months = calendarService.getCalendar(12, 42, date.getYear, date.getMonthValue)
+    val firstDate = LocalDate.of(date.getYear, date.getMonthValue, 1).format(dtf)
+    calendarService.getMembers.map(members => Ok(views.html.calendar(months, members.toList, firstDate)))
   }
 
 }

@@ -41,7 +41,7 @@ class SongController @Inject()(cc: ControllerComponents,
 
   def deleteSong(songId: String) = SecuredAction { implicit request =>
     implicit val user = request.user
-    songRepository.delete(songId)
+    songRepository.delete(songId.toLong)
     Ok
   }
 
